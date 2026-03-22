@@ -1,0 +1,115 @@
+/* ===== Navbar Links ===== */
+.navbar-links{display:flex;align-items:center;gap:0.25rem;}
+.nav-link{padding:8px 14px;border-radius:var(--radius-sm);font-size:0.82rem;font-weight:500;color:var(--text-secondary);transition:all var(--transition-fast);white-space:nowrap;}
+.nav-link:hover{color:var(--text-primary);background:rgba(255,255,255,0.05);}
+.nav-link--active{color:var(--text-primary);background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);}
+
+/* ===== Quick Actions ===== */
+.quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;padding:0 3rem 2rem;max-width:1200px;margin:0 auto;}
+.quick-action-card{display:flex;align-items:center;gap:1rem;padding:1.5rem;cursor:pointer;}
+.quick-action-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-glow);}
+.qa-icon{font-size:2rem;flex-shrink:0;}
+.quick-action-card strong{display:block;font-size:0.95rem;margin-bottom:2px;}
+.quick-action-card p{font-size:0.8rem;color:var(--text-secondary);margin:0;}
+
+/* ===== Card Badges ===== */
+.card-badge{position:absolute;top:12px;right:12px;padding:2px 8px;border-radius:var(--radius-xl);font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;}
+.card-badge--team{background:rgba(124,58,237,0.15);color:#a78bfa;border:1px solid rgba(124,58,237,0.3);}
+.card-badge--community{background:rgba(52,211,153,0.1);color:#34d399;border:1px solid rgba(52,211,153,0.2);}
+
+/* ===== Avatar Initials (for users without images) ===== */
+.avatar-initials{width:100%;height:100%;border-radius:var(--radius-full);background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:700;color:white;border:3px solid var(--bg-primary);}
+.avatar-ring--sm{width:52px;height:52px;padding:2px;flex-shrink:0;}
+.avatar-ring--sm .avatar-initials{font-size:1rem;}
+.avatar-ring--sm img{border-width:2px;}
+
+.profile-avatar-initials{width:100%;height:100%;border-radius:var(--radius-full);background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:700;color:white;border:4px solid var(--bg-primary);}
+
+/* ===== Profile Badges & Actions ===== */
+.profile-badge{display:inline-block;padding:4px 12px;border-radius:var(--radius-xl);font-size:0.75rem;font-weight:600;margin-bottom:0.75rem;}
+.profile-badge--team{background:rgba(124,58,237,0.15);color:#a78bfa;border:1px solid rgba(124,58,237,0.3);}
+.profile-badge--community{background:rgba(52,211,153,0.1);color:#34d399;border:1px solid rgba(52,211,153,0.2);}
+.profile-actions{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-top:0.5rem;}
+.btn-connect{padding:8px 18px;background:var(--gradient-primary);color:white;border-radius:var(--radius-xl);font-size:0.85rem;font-weight:500;transition:all var(--transition-fast);}
+.btn-connect:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,58,237,0.3);}
+.btn-connected{padding:8px 18px;background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.3);border-radius:var(--radius-xl);font-size:0.85rem;font-weight:500;}
+.btn-share{padding:8px 18px;background:var(--bg-glass);border:1px solid var(--border-subtle);color:var(--text-secondary);border-radius:var(--radius-xl);font-size:0.85rem;font-weight:500;transition:all var(--transition-fast);}
+.btn-share:hover{background:var(--bg-glass-hover);color:var(--text-primary);}
+
+/* ===== Share Link Box ===== */
+.share-link-box{margin:1.5rem auto;max-width:500px;text-align:left;}
+.share-label{font-size:0.85rem;color:var(--text-secondary);display:block;margin-bottom:0.5rem;}
+.share-link-row{display:flex;gap:0.5rem;}
+.share-url-input{font-size:0.82rem !important;padding:10px 14px !important;}
+
+/* ===== Find Teammates Page ===== */
+.teammates-page{padding-top:80px;position:relative;z-index:1;max-width:1000px;margin:0 auto;padding-left:2rem;padding-right:2rem;padding-bottom:4rem;}
+.teammates-hero{text-align:center;padding:3rem 0 2rem;}
+.teammates-hero h1{font-family:var(--font-heading);font-size:2.2rem;font-weight:700;margin-bottom:0.5rem;}
+.teammates-hero p{color:var(--text-secondary);font-size:1rem;}
+
+.search-section{padding:1.5rem;margin-bottom:1.5rem;}
+.search-bar{position:relative;}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.1rem;}
+.search-input{padding-left:42px !important;}
+.filter-chips-section{margin-top:1rem;}
+.filter-label{font-size:0.8rem;color:var(--text-muted);display:block;margin-bottom:0.5rem;}
+.filter-chips{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.filter-chip{padding:5px 12px;border-radius:var(--radius-xl);font-size:0.75rem;font-weight:500;background:var(--bg-glass);border:1px solid var(--border-subtle);color:var(--text-secondary);transition:all var(--transition-fast);cursor:pointer;}
+.filter-chip:hover{color:var(--text-primary);border-color:var(--border-accent);}
+.filter-chip--active{background:rgba(124,58,237,0.2);color:#a78bfa;border-color:rgba(124,58,237,0.4);}
+
+.search-results-info{padding:0 0.25rem;margin-bottom:1rem;font-size:0.85rem;color:var(--text-secondary);}
+
+.teammates-grid{display:flex;flex-direction:column;gap:1rem;}
+.teammate-card{padding:1.5rem;position:relative;opacity:0;animation:cardEnter 0.4s var(--ease-out) forwards;}
+.teammate-card-top{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;}
+.teammate-card-info{flex:1;}
+.teammate-name{font-family:var(--font-heading);font-size:1.05rem;font-weight:600;}
+.teammate-role{font-size:0.8rem;color:var(--text-accent);}
+.teammate-bio{font-size:0.85rem;color:var(--text-secondary);line-height:1.5;margin-bottom:0.75rem;}
+.teammate-skills{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.view-profile-btn-sm{margin-top:1rem;padding:6px 16px;background:transparent;border:1px solid var(--border-accent);color:var(--text-accent);border-radius:var(--radius-xl);font-size:0.8rem;font-weight:500;transition:all var(--transition-fast);}
+.view-profile-btn-sm:hover{background:rgba(124,58,237,0.15);}
+
+.btn-connect-sm{padding:6px 14px;background:var(--gradient-primary);color:white;border-radius:var(--radius-xl);font-size:0.8rem;font-weight:500;transition:all var(--transition-fast);flex-shrink:0;}
+.btn-connect-sm:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(124,58,237,0.3);}
+.btn-connected-sm{padding:6px 14px;background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.3);border-radius:var(--radius-xl);font-size:0.8rem;font-weight:500;flex-shrink:0;}
+.you-badge{padding:6px 14px;background:rgba(124,58,237,0.1);color:#a78bfa;border-radius:var(--radius-xl);font-size:0.8rem;font-weight:500;flex-shrink:0;}
+
+.no-results{padding:3rem;text-align:center;}
+.no-results h3{margin-bottom:0.5rem;}
+.no-results p{color:var(--text-secondary);}
+
+/* ===== Collaborate Page ===== */
+.collab-page{padding-top:80px;position:relative;z-index:1;max-width:1000px;margin:0 auto;padding-left:2rem;padding-right:2rem;padding-bottom:4rem;}
+.collab-hero{text-align:center;padding:3rem 0 1.5rem;}
+.collab-hero h1{font-family:var(--font-heading);font-size:2.2rem;font-weight:700;margin-bottom:0.5rem;}
+.collab-hero p{color:var(--text-secondary);font-size:1rem;}
+.collab-actions{display:flex;justify-content:center;margin-bottom:2rem;}
+
+.new-project-form{padding:2rem;margin-bottom:2rem;animation:cardEnter 0.3s var(--ease-out) forwards;}
+
+.collab-project-card{padding:2rem;margin-bottom:1.5rem;opacity:0;animation:cardEnter 0.5s var(--ease-out) forwards;}
+.collab-project-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;}
+.collab-project-title{font-family:var(--font-heading);font-size:1.2rem;font-weight:600;margin-bottom:0.25rem;}
+.collab-project-meta{font-size:0.8rem;color:var(--text-muted);}
+.collab-status{padding:4px 10px;border-radius:var(--radius-xl);font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;}
+.collab-status--open{background:rgba(52,211,153,0.1);color:#34d399;border:1px solid rgba(52,211,153,0.2);}
+.collab-project-desc{font-size:0.9rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1.5rem;}
+.collab-project-footer{display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1rem;}
+.footer-label{font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.3px;display:block;margin-bottom:0.5rem;}
+.member-chips{display:flex;gap:0.4rem;}
+.member-chip{width:32px;height:32px;border-radius:var(--radius-full);background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;color:white;border:2px solid var(--bg-primary);}
+.collab-project-actions{display:flex;justify-content:flex-end;gap:0.75rem;}
+.btn-join{padding:8px 20px;background:var(--gradient-primary);color:white;border-radius:var(--radius-xl);font-size:0.85rem;font-weight:500;transition:all var(--transition-fast);}
+.btn-join:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,58,237,0.3);}
+.owner-badge{padding:8px 16px;background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);border-radius:var(--radius-xl);font-size:0.85rem;font-weight:500;}
+.joined-badge{padding:8px 16px;background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.3);border-radius:var(--radius-xl);font-size:0.85rem;font-weight:500;}
+
+/* ===== Responsive additions ===== */
+@media(max-width:768px){
+  .navbar-links{display:none;}
+  .quick-actions{grid-template-columns:1fr;padding:0 1rem 1rem;}
+  .teammates-page,.collab-page{padding-left:1rem;padding-right:1rem;}
+}
