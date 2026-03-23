@@ -151,8 +151,7 @@ All user-generated data (portfolios, connection requests, collaborative projects
 ---
 
 ## 📄 License
-
-This project was created for academic (PBL) purposes. All rights reserved by Team Elevate.
+ All rights reserved by Team Elevate.
 
 ---
 
