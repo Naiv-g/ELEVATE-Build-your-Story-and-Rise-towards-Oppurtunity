@@ -75,8 +75,8 @@ ELEVATE is a **Single Page Application (SPA)** built entirely without a framewor
 
 ## 👥 Team
 
-| Name | Role |
-|---|---|
+| Name | 
+|---|
 | **Naivaidhya Garg** |
 | **Aarjav Jain** | 
 | **Devank Joshi** |
