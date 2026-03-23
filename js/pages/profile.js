@@ -97,6 +97,33 @@ export function renderProfile(memberId, username) {
         <div class="skills-grid">${skillBars}</div>
       </div>` : ''}
 
+      ${member.education || member.experience ? `
+      <div class="profile-section">
+        <h2 class="profile-section-title"><span class="icon">🎓</span> Education & Experience</h2>
+        <div class="glass-card" style="padding: 1.5rem;">
+          ${member.education ? `<div style="margin-bottom: 1rem;">
+            <span style="color: var(--accent-purple); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Education</span>
+            <p style="color: var(--text-primary); margin-top: 0.4rem;">${member.education}</p>
+          </div>` : ''}
+          ${member.experience ? `<div>
+            <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Experience</span>
+            <p style="color: var(--text-primary); margin-top: 0.4rem;">${member.experience}</p>
+          </div>` : ''}
+        </div>
+      </div>` : ''}
+
+      ${member.achievements && member.achievements.length > 0 ? `
+      <div class="profile-section">
+        <h2 class="profile-section-title"><span class="icon">🏆</span> Achievements</h2>
+        <div class="glass-card" style="padding: 1.5rem;">
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            ${member.achievements.map(a => `<li style="color: var(--text-primary); padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 0.75rem;">
+              <span style="color: var(--accent-amber); font-size: 1.1rem;">★</span> ${a}
+            </li>`).join('')}
+          </ul>
+        </div>
+      </div>` : ''}
+
       ${member.projects && member.projects.length > 0 ? `
       <div class="profile-section">
         <h2 class="profile-section-title"><span class="icon">📁</span> Projects</h2>
