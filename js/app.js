@@ -4,6 +4,7 @@ import { renderProfile } from './pages/profile.js';
 import { renderBuilder } from './pages/builder.js';
 import { renderFindTeammates } from './pages/find-teammates.js';
 import { renderCollaborate } from './pages/collaborate.js';
+import { portfolioStore, supabase } from './data.js';
 
 class ElevateApp {
   constructor() {
@@ -12,15 +13,59 @@ class ElevateApp {
     this.username = '';
     window.addEventListener('hashchange', () => this.route());
     window.ElevateApp = this;
+    
+    // Check existing session
+    this.initAuth();
+  }
+
+  async initAuth() {
+    const EMAIL_TO_PROFILE_ID = {
+      'naivaidhyag@gmail.com': 'naivaidhya',
+      'aarjavjain2210@gmail.com': 'aarjav',
+      'adityarawatar01@gmail.com': 'aditya',
+      'devankjoshi17@gmail.com': 'devank'
+    };
+
+    const { data } = await supabase.auth.getSession();
+    if (data.session) {
+      this.isLoggedIn = true;
+      this.email = data.session.user.email;
+      this.username = data.session.user.user_metadata?.full_name || data.session.user.email.split('@')[0];
+      this.profileId = EMAIL_TO_PROFILE_ID[this.email] || this.username;
+    }
+    
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        this.isLoggedIn = true;
+        this.email = session.user.email;
+        this.username = session.user.user_metadata?.full_name || session.user.email.split('@')[0];
+        this.profileId = EMAIL_TO_PROFILE_ID[this.email] || this.username;
+      } else {
+        this.isLoggedIn = false;
+        this.email = '';
+        this.username = '';
+        this.profileId = '';
+        if (window.location.hash !== '#/login') {
+          window.location.hash = '#/login';
+        }
+      }
+    });
+
     this.route();
   }
 
-  route() {
+  async route() {
     const hash = window.location.hash || '#/login';
     if (!this.isLoggedIn && hash !== '#/login') {
       window.location.hash = '#/login';
       return;
     }
+
+    if (hash !== '#/login') {
+      this.appEl.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;color:#fff;font-size:1.5rem;">Loading data...</div>';
+      await portfolioStore.fetchFromSupabase();
+    }
+
     if (hash === '#/login') {
       this.renderPage(renderLogin((n) => this.handleLogin(n), (n) => this.handleSignup(n)));
     } else if (hash === '#/home') {
@@ -56,7 +101,8 @@ class ElevateApp {
     window.location.hash = '#/builder';
   }
 
-  logout() {
+  async logout() {
+    await supabase.auth.signOut();
     this.isLoggedIn = false;
     this.username = '';
     window.location.hash = '#/login';

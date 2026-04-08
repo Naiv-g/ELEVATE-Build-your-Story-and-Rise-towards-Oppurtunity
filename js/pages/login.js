@@ -1,3 +1,5 @@
+import { supabase } from '../data.js';
+
 export function renderLogin(onLogin, onSignup) {
   const html = `
     <div class="login-page page">
@@ -38,6 +40,7 @@ export function renderLogin(onLogin, onSignup) {
 
           <!-- Login Form -->
           <form id="login-form">
+            <div id="login-error" style="color: #ff6b6b; font-size: 0.9rem; margin-bottom: 15px; display: none; background: rgba(255,0,0,0.1); padding: 10px; border-radius: 8px;"></div>
             <div class="form-group">
               <label class="form-label">Email</label>
               <input type="email" class="form-input" id="login-email" placeholder="your@email.com" required>
@@ -53,6 +56,8 @@ export function renderLogin(onLogin, onSignup) {
 
           <!-- Signup Form -->
           <form id="signup-form" class="hidden">
+            <div id="signup-error" style="color: #ff6b6b; font-size: 0.9rem; margin-bottom: 15px; display: none; background: rgba(255,0,0,0.1); padding: 10px; border-radius: 8px;"></div>
+            <div id="signup-success" style="color: #51cf66; font-size: 0.9rem; margin-bottom: 15px; display: none; background: rgba(0,255,0,0.1); padding: 10px; border-radius: 8px;"></div>
             <div class="form-group">
               <label class="form-label">Full Name</label>
               <input type="text" class="form-input" id="signup-name" placeholder="Your full name" required>
@@ -64,18 +69,13 @@ export function renderLogin(onLogin, onSignup) {
               <div class="input-glow"></div>
             </div>
             <div class="form-group">
-              <label class="form-label">Password</label>
-              <input type="password" class="form-input" id="signup-password" placeholder="Create a password" required>
+              <label class="form-label">Password (Min 6 chars)</label>
+              <input type="password" class="form-input" id="signup-password" placeholder="Create a password" required minlength="6">
               <div class="input-glow"></div>
             </div>
             <button type="submit" class="btn-primary" id="btn-signup">Create Account →</button>
           </form>
 
-          <div class="form-divider">or continue with</div>
-          <div class="social-buttons">
-            <button class="btn-social">🐙 <span>GitHub</span></button>
-            <button class="btn-social">🔗 <span>Google</span></button>
-          </div>
         </div>
       </div>
     </div>
@@ -90,6 +90,12 @@ function initLoginEvents(onLogin, onSignup) {
   const signupForm = document.getElementById('signup-form');
   const authTitle = document.getElementById('auth-title');
   const authSubtitle = document.getElementById('auth-subtitle');
+
+  const loginError = document.getElementById('login-error');
+  const signupError = document.getElementById('signup-error');
+  const signupSuccess = document.getElementById('signup-success');
+  const btnLogin = document.getElementById('btn-login');
+  const btnSignup = document.getElementById('btn-signup');
 
   tabLogin.addEventListener('click', () => {
     tabLogin.classList.add('active');
@@ -109,18 +115,70 @@ function initLoginEvents(onLogin, onSignup) {
     authSubtitle.textContent = 'Create your account and start building';
   });
 
-  loginForm.addEventListener('submit', (e) => {
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     addRipple(e);
     const email = document.getElementById('login-email').value;
-    setTimeout(() => onLogin(email.split('@')[0] || 'User'), 400);
+    const password = document.getElementById('login-password').value;
+    
+    loginError.style.display = 'none';
+    btnLogin.disabled = true;
+    btnLogin.textContent = 'Logging in...';
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    btnLogin.disabled = false;
+    btnLogin.textContent = 'Log In →';
+
+    if (error) {
+      loginError.textContent = error.message;
+      loginError.style.display = 'block';
+    } else {
+      const name = data.user.user_metadata?.full_name || email.split('@')[0];
+      onLogin(name, data.user.id);
+    }
   });
 
-  signupForm.addEventListener('submit', (e) => {
+  signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     addRipple(e);
     const name = document.getElementById('signup-name').value;
-    setTimeout(() => onSignup(name), 400);
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+
+    signupError.style.display = 'none';
+    signupSuccess.style.display = 'none';
+    btnSignup.disabled = true;
+    btnSignup.textContent = 'Creating...';
+
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          full_name: name
+        }
+      }
+    });
+
+    btnSignup.disabled = false;
+    btnSignup.textContent = 'Create Account →';
+
+    if (error) {
+      signupError.textContent = error.message;
+      signupError.style.display = 'block';
+    } else {
+      if (data?.session) {
+         // Auto login if email confirmation is disabled
+         onSignup(name, data.user.id);
+      } else {
+         signupSuccess.textContent = "Success! Please check your email to confirm your account (if email confirmation is required by your Supabase project settings), or try logging in.";
+         signupSuccess.style.display = 'block';
+      }
+    }
   });
 
   // Ripple on buttons

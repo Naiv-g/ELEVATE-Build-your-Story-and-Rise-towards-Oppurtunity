@@ -48,9 +48,13 @@ export function renderProfile(memberId, username) {
   // Connection button (only show if not viewing own profile)
   const connStatus = portfolioStore.getConnectionStatus(username, member.id);
   let connectBtnHTML = '';
-  if (member.name !== username) {
+  if (member.name !== username && member.id !== (window.ElevateApp?.profileId || username)) {
     if (connStatus === 'pending') {
       connectBtnHTML = '<button class="btn-connected" disabled>✓ Request Sent</button>';
+    } else if (connStatus === 'incoming_pending') {
+      connectBtnHTML = '<button class="btn-connected" disabled style="background: rgba(245, 159, 0, 0.1); color: #f59f00; border-color: rgba(245, 159, 0, 0.3);">Req Received</button>';
+    } else if (connStatus === 'connected') {
+      connectBtnHTML = '<button class="btn-connected" disabled style="background: rgba(81, 207, 102, 0.15); color: #51cf66; border-color: rgba(81, 207, 102, 0.3);">🤝 Connected</button>';
     } else {
       connectBtnHTML = `<button class="btn-connect" id="btn-connect" data-id="${member.id}">🤝 Connect</button>`;
     }

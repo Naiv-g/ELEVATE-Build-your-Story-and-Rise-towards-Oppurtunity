@@ -35,8 +35,11 @@ const TEAM_DATA = [
     id: 'aarjav',
     name: 'Aarjav Jain',
     role: 'AI/ML Developer & Computer Vision Engineer',
-    https://github.com/Aarjav-Jain-2210', linkedin: 'https://www.linkedin.com/in/aarjavjjain' },
-      skills: [
+    avatar: 'assets/avatar_aarjav.png',
+    bio: 'B.Tech CSE (AI & ML) student at Graphic Era University (CGPA 9.01) with hands-on expertise in computer vision, deep learning, and data science. Former AI & ML Intern at DataSparshTech LLP. National Hackathon Finalist (Code For Bharat \'25) and AWS JAM Day Top-10 Performer. Builds end-to-end ML pipelines from data collection to model deployment.',
+    shortBio: 'AI/ML developer specializing in computer vision, deep learning, and data science.',
+    socials: { github: 'https://github.com/Aarjav-Jain-2210', linkedin: 'https://www.linkedin.com/in/aarjavjjain' },
+    skills: [
         { name: 'Python', level: 92 },
         { name: 'PyTorch / YOLOv8', level: 90 },
         { name: 'OpenCV', level: 88 },
@@ -123,80 +126,36 @@ const TEAM_DATA = [
   }
 ];
 
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const supabaseUrl = 'https://ayzbwvppkkiifgdcjirq.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF5emJ3dnBwa2tpaWZnZGNqaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NTgyNTgsImV4cCI6MjA5MTIzNDI1OH0.a_CPAD9k4y9lFnYW5uABrG27rb3T5bLAQfd_xLMiPzs';
+// @ts-ignore
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 // ===== Global Portfolio Store  =====
-// Persists user-created portfolios so everyone can see them.
-// In a real app this would be a database; here we use localStorage + in-memory.
+// Persists user-created portfolios, connections, and projects via Supabase
 class PortfolioStore {
   constructor() {
     this._community = [];
     this._connections = []; // { from, to, status }
     this._collabProjects = [];
-    this._load();
   }
 
-  _load() {
+  async fetchFromSupabase() {
     try {
-      this._community = JSON.parse(localStorage.getItem('elevate_community') || '[]');
-      this._connections = JSON.parse(localStorage.getItem('elevate_connections') || '[]');
-      this._collabProjects = JSON.parse(localStorage.getItem('elevate_projects') || '[]');
-    } catch { /* ignore */ }
-    // Seed some sample community portfolios if empty
-    if (this._community.length === 0) {
-      this._community = [
-        {
-          id: 'community_riya', name: 'Riya Kapoor', role: 'UI/UX Designer & Frontend Developer',
-          bio: 'B.Des Communication Design student passionate about creating human-centered designs. Experienced in Figma, Adobe Creative Suite, and front-end prototyping. Has designed interfaces for 5+ student startups and contributed to open-source design systems.',
-          shortBio: 'UI/UX designer building accessible, human-centered digital experiences.',
-          skills: [{ name: 'Figma', level: 92 }, { name: 'Adobe XD', level: 85 }, { name: 'CSS / Tailwind', level: 80 }, { name: 'Prototyping', level: 88 }, { name: 'User Research', level: 82 }],
-          topSkills: ['Figma', 'Adobe XD', 'CSS'], skillColors: ['pink', 'purple', 'cyan'],
-          projects: [
-            { name: 'DesignKit', description: 'Open-source UI kit with 200+ reusable components for Figma covering dashboards, e-commerce, and social apps.', status: 'active', techStack: ['Figma', 'Design Systems'] },
-            { name: 'MediCare UI Redesign', description: 'Complete UI/UX redesign for a healthcare appointment booking app. Improved user task completion rate by 35% through usability testing.', status: 'completed', techStack: ['Figma', 'User Research', 'Prototyping'] }
-          ],
-          socials: { github: '#', linkedin: '#' }, isTeam: false, avatar: null
-        },
-        {
-          id: 'community_arjun', name: 'Arjun Verma', role: 'Cloud & DevOps Engineer',
-          bio: 'B.Tech IT student and AWS Certified Cloud Practitioner. Builds reliable, auto-scaling infrastructure and CI/CD pipelines. Interned at a cloud consulting firm deploying Kubernetes clusters for production workloads.',
-          shortBio: 'AWS-certified cloud engineer building reliable, auto-scaling infrastructure.',
-          skills: [{ name: 'AWS (EC2, Lambda)', level: 90 }, { name: 'Terraform', level: 85 }, { name: 'Docker / K8s', level: 88 }, { name: 'Python', level: 78 }, { name: 'Linux / Bash', level: 85 }],
-          topSkills: ['AWS', 'Terraform', 'Docker'], skillColors: ['amber', 'green', 'cyan'],
-          projects: [
-            { name: 'InfraBot', description: 'Slack bot that provisions cloud environments on demand via ChatOps. Reduces environment setup time from 2 hours to 5 minutes.', status: 'completed', techStack: ['AWS', 'Terraform', 'Node.js'] },
-            { name: 'K8s Auto-Scaler', description: 'Custom Kubernetes HPA controller using Prometheus metrics for intelligent pod scaling based on application-specific SLOs.', status: 'active', techStack: ['Kubernetes', 'Go', 'Prometheus'] }
-          ],
-          socials: { github: '#', linkedin: '#' }, isTeam: false, avatar: null
-        },
-        {
-          id: 'community_sneha', name: 'Sneha Reddy', role: 'Mobile App Developer',
-          bio: 'B.Tech CSE student specializing in cross-platform mobile development with Flutter and React Native. Has published 3 apps on Google Play Store with a combined 10K+ downloads. Focused on smooth animations and offline-first architecture.',
-          shortBio: 'Mobile developer shipping cross-platform apps with Flutter & React Native.',
-          skills: [{ name: 'Flutter / Dart', level: 90 }, { name: 'React Native', level: 82 }, { name: 'Firebase', level: 87 }, { name: 'REST APIs', level: 85 }, { name: 'SQLite', level: 80 }],
-          topSkills: ['Flutter', 'Firebase', 'Dart'], skillColors: ['cyan', 'amber', 'purple'],
-          projects: [
-            { name: 'FitTrack', description: 'Health & fitness tracking app with step counter, calorie logger, and custom workout plans. 5K+ downloads on Play Store with 4.5★ rating.', status: 'active', techStack: ['Flutter', 'Firebase', 'Dart'] },
-            { name: 'CampusConnect', description: 'College social networking app with event discovery, study group matching, and anonymous Q&A. Built with React Native and Firebase.', status: 'completed', techStack: ['React Native', 'Firebase', 'Node.js'] }
-          ],
-          socials: { github: '#', linkedin: '#' }, isTeam: false, avatar: null
-        }
-      ];
-      this._save();
+      const [{ data: pData }, { data: prData }, { data: cData }] = await Promise.all([
+        supabase.from('profiles').select('data'),
+        supabase.from('projects').select('data'),
+        supabase.from('connections').select('data')
+      ]);
+      
+      if (pData) this._community = pData.map(r => r.data);
+      if (prData) this._collabProjects = prData.map(r => r.data);
+      if (cData) this._connections = cData.map(r => r.data);
+    } catch (e) {
+      console.error("Error fetching from Supabase:", e);
     }
-    // Seed some collab projects if empty
-    if (this._collabProjects.length === 0) {
-      this._collabProjects = [
-        { id: 'proj_1', title: 'AI-Powered Road Safety System', description: 'Build a real-time road infrastructure monitoring system using YOLOv8 and OpenCV. Looking for ML engineers and backend developers to scale the detection pipeline.', owner: 'Aarjav Jain', skillsNeeded: ['Python', 'PyTorch', 'OpenCV', 'Flask'], members: ['Aarjav Jain', 'Naivaidhya Garg'], status: 'open', createdAt: '2026-03-15' },
-        { id: 'proj_2', title: 'Smart Health Analytics Platform', description: 'An RAG + LLM powered health chatbot for symptom-based disease inference with secure data handling. Need NLP engineers and frontend developers.', owner: 'Naivaidhya Garg', skillsNeeded: ['Python', 'RAG', 'LLMs', 'React'], members: ['Naivaidhya Garg', 'Aditya Rawat'], status: 'open', createdAt: '2026-03-18' },
-        { id: 'proj_3', title: 'Campus Deployment Pipeline', description: 'Automated CI/CD platform for student projects with one-click Docker deployments and monitoring dashboards. Looking for DevOps and full-stack contributors.', owner: 'Devank Joshi', skillsNeeded: ['Docker', 'Kubernetes', 'Node.js', 'React'], members: ['Devank Joshi', 'Aarjav Jain'], status: 'open', createdAt: '2026-03-20' }
-      ];
-      this._save();
-    }
-  }
-
-  _save() {
-    localStorage.setItem('elevate_community', JSON.stringify(this._community));
-    localStorage.setItem('elevate_connections', JSON.stringify(this._connections));
-    localStorage.setItem('elevate_projects', JSON.stringify(this._collabProjects));
   }
 
   // Get all profiles: team + community
@@ -205,46 +164,101 @@ class PortfolioStore {
   getProfileById(id) { return this.getAllProfiles().find(p => p.id === id) || null; }
 
   // Add a new user portfolio
-  addPortfolio(portfolio) {
+  async addPortfolio(portfolio) {
     // Prevent duplicates
     this._community = this._community.filter(p => p.id !== portfolio.id);
     this._community.push(portfolio);
-    this._save();
+    
+    // Save to Supabase
+    try {
+      await supabase.from('profiles').upsert({ id: portfolio.id, data: portfolio });
+    } catch(e) { console.error('Error saving portfolio:', e); }
     return portfolio;
   }
 
   // Connections / teammate requests
   getConnections() { return this._connections; }
-  sendConnectionRequest(from, toId) {
-    const existing = this._connections.find(c => c.from === from && c.to === toId);
+  
+  async sendConnectionRequest(from, toId) {
+    const existing = this._connections.find(c => (c.from === from && c.to === toId) || (c.from === toId && c.to === from));
     if (existing) return existing;
     const conn = { from, to: toId, status: 'pending', createdAt: new Date().toISOString() };
     this._connections.push(conn);
-    this._save();
+    
+    // Save to Supabase
+    try {
+      const connId = `${from}_${toId}`;
+      await supabase.from('connections').upsert({ id: connId, data: conn });
+    } catch(e) { console.error('Error saving connection:', e); }
     return conn;
   }
-  getConnectionStatus(from, toId) {
-    const c = this._connections.find(c => c.from === from && c.to === toId);
-    return c ? c.status : null;
+  
+  async acceptConnectionRequest(from, toId) {
+    const conn = this._connections.find(c => c.from === from && c.to === toId);
+    if (!conn) return null;
+    conn.status = 'connected';
+    
+    // Save to Supabase
+    try {
+      const connId = `${from}_${toId}`;
+      await supabase.from('connections').upsert({ id: connId, data: conn });
+    } catch(e) { console.error('Error accepting connection:', e); }
+    return conn;
+  }
+  
+  getConnectionStatus(u1, u2) {
+    const c = this._connections.find(c => (c.from === u1 && c.to === u2) || (c.from === u2 && c.to === u1));
+    if (!c) return null;
+    // If it's pending, but I am the receiver, we should probably differentiate so I don't see "Request Sent".
+    // Wait, the UI relies on 'pending' to mean "I sent a request".
+    // If u1 is the receiver and it's pending, return 'incoming_pending' instead of 'pending'.
+    if (c.status === 'pending') {
+      if (c.from === u1) return 'pending'; // I sent it
+      return 'incoming_pending'; // They sent it to me
+    }
+    return c.status; // 'connected'
   }
 
   // Collaboration projects
   getCollabProjects() { return this._collabProjects; }
-  addCollabProject(project) {
+  
+  async addCollabProject(project) {
     this._collabProjects.push(project);
-    this._save();
+    
+    // Save to Supabase
+    try {
+      await supabase.from('projects').upsert({ id: project.id, data: project });
+    } catch(e) { console.error('Error saving project:', e); }
     return project;
   }
-  joinProject(projectId, memberName) {
-    const proj = this._collabProjects.find(p => p.id === projectId);
-    if (proj && !proj.members.includes(memberName)) {
-      proj.members.push(memberName);
-      this._save();
+  
+  async sendProjectJoinRequest(projectId, username) {
+    const p = this._collabProjects.find(p => p.id === projectId);
+    if (p) {
+      if (!p.joinRequests) p.joinRequests = [];
+      if (!p.joinRequests.includes(username) && !p.members.includes(username)) {
+        p.joinRequests.push(username);
+        try {
+          await supabase.from('projects').upsert({ id: p.id, data: p });
+        } catch(e) { console.error('Error requesting to join project:', e); }
+      }
     }
-    return proj;
+  }
+
+  async acceptProjectJoinRequest(projectId, reqUsername) {
+    const p = this._collabProjects.find(p => p.id === projectId);
+    if (p && p.joinRequests && p.joinRequests.includes(reqUsername)) {
+      p.joinRequests = p.joinRequests.filter(u => u !== reqUsername);
+      if (!p.members.includes(reqUsername)) {
+        p.members.push(reqUsername);
+      }
+      try {
+        await supabase.from('projects').upsert({ id: p.id, data: p });
+      } catch(e) { console.error('Error accepting join request:', e); }
+    }
   }
 }
 
 const portfolioStore = new PortfolioStore();
 
-export { TEAM_DATA, portfolioStore };
+export { TEAM_DATA, portfolioStore, supabase };

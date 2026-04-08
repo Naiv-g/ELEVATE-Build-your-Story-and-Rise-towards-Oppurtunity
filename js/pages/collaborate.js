@@ -81,13 +81,17 @@ function initCollaborate(username) {
 
       const isMember = p.members.includes(username);
       const isOwner = p.owner === username;
+      const isRequested = (p.joinRequests || []).includes(username);
+      
       let actionBtn = '';
       if (isOwner) {
         actionBtn = '<span class="owner-badge">👑 Owner</span>';
       } else if (isMember) {
-        actionBtn = '<span class="joined-badge">✓ Joined</span>';
+        actionBtn = '<span class="joined-badge" style="background: rgba(81, 207, 102, 0.15); color: #51cf66; border: 1px solid rgba(81, 207, 102, 0.3); padding: 6px 14px; border-radius: 6px;">✓ Joined</span>';
+      } else if (isRequested) {
+        actionBtn = '<button class="btn-join" disabled style="background: rgba(245, 159, 0, 0.1); color: #f59f00; border: 1px solid rgba(245, 159, 0, 0.3); opacity: 0.8; cursor: not-allowed;">⏳ Requested</button>';
       } else {
-        actionBtn = `<button class="btn-join" data-id="${p.id}">Join Project →</button>`;
+        actionBtn = `<button class="btn-join" data-id="${p.id}">Req to Join →</button>`;
       }
 
       return `
@@ -116,16 +120,18 @@ function initCollaborate(username) {
     }).join('');
 
     // Join buttons
-    list.querySelectorAll('.btn-join').forEach(btn => {
+    list.querySelectorAll('.btn-join:not([disabled])').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.id;
-        portfolioStore.joinProject(id, username);
-        btn.textContent = '✓ Joined';
-        btn.classList.add('joined-badge');
-        btn.classList.remove('btn-join');
+        portfolioStore.sendProjectJoinRequest(id, username);
+        btn.textContent = '⏳ Requested';
+        btn.style.background = 'rgba(245, 159, 0, 0.1)';
+        btn.style.color = '#f59f00';
+        btn.style.borderColor = 'rgba(245, 159, 0, 0.3)';
+        btn.style.opacity = '0.8';
+        btn.style.cursor = 'not-allowed';
         btn.disabled = true;
-        showToast('🎉 You joined the project!');
-        setTimeout(renderProjects, 500);
+        showToast('🎉 Join request sent successfully!');
       });
     });
   }

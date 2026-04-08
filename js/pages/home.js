@@ -1,6 +1,12 @@
 import { TEAM_DATA, portfolioStore } from '../data.js';
 import { renderNavbar } from '../components/navbar.js';
 
+// Attach global handler for accepting requests
+window.acceptConnection = async (from, toId) => {
+  await portfolioStore.acceptConnectionRequest(from, toId);
+  if (window.ElevateApp) window.ElevateApp.route();
+};
+
 function makeCard(m) {
   const skillTags = (m.topSkills || m.skills?.slice(0,3).map(s=>s.name) || []).map((s, i) => {
     const colors = m.skillColors || ['purple','cyan','pink'];
@@ -30,8 +36,6 @@ export function renderHome(username) {
   const teamCards = TEAM_DATA.map(makeCard).join('');
   const communityProfiles = portfolioStore.getCommunityProfiles();
   const communityCards = communityProfiles.map(makeCard).join('');
-  const totalCount = TEAM_DATA.length + communityProfiles.length;
-
   const html = `
     ${renderNavbar(username, 'home')}
     <div class="bg-orbs">

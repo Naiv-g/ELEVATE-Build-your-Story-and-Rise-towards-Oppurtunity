@@ -90,12 +90,16 @@ function initFindTeammates(username) {
         : `<div class="avatar-initials">${m.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()}</div>`;
 
       const connStatus = portfolioStore.getConnectionStatus(username, m.id);
-      const isMe = m.name === username;
+      const isMe = m.name === username || m.id === (window.ElevateApp?.profileId || username);
       let actionBtn = '';
       if (isMe) {
         actionBtn = '<span class="you-badge">You</span>';
       } else if (connStatus === 'pending') {
         actionBtn = '<button class="btn-connected-sm" disabled>✓ Sent</button>';
+      } else if (connStatus === 'incoming_pending') {
+        actionBtn = '<button class="btn-connected-sm" disabled style="color: #f59f00; border-color: rgba(245, 159, 0, 0.3); background: rgba(245, 159, 0, 0.1);">Req Received</button>';
+      } else if (connStatus === 'connected') {
+        actionBtn = '<button class="btn-connected-sm" disabled style="background: rgba(81, 207, 102, 0.15); color: #51cf66; border-color: rgba(81, 207, 102, 0.3);">🤝 Connected</button>';
       } else {
         actionBtn = `<button class="btn-connect-sm" data-id="${m.id}" data-name="${m.name}">🤝 Connect</button>`;
       }
