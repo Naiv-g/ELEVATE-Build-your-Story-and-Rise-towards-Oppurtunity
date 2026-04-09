@@ -1,4 +1,4 @@
-// Team member data sourced from actual resumes
+// Team members data 
 const TEAM_DATA = [
   {
     id: 'naivaidhya',
@@ -40,15 +40,15 @@ const TEAM_DATA = [
     shortBio: 'AI/ML developer specializing in computer vision, deep learning, and data science.',
     socials: { github: 'https://github.com/Aarjav-Jain-2210', linkedin: 'https://www.linkedin.com/in/aarjavjjain' },
     skills: [
-        { name: 'Python', level: 92 },
-        { name: 'PyTorch / YOLOv8', level: 90 },
-        { name: 'OpenCV', level: 88 },
-        { name: 'Scikit-learn', level: 85 },
-        { name: 'C / C++', level: 82 },
-        { name: 'Java', level: 78 },
-        { name: 'NumPy / Pandas', level: 88 },
-        { name: 'NVIDIA CUDA', level: 75 }
-      ],
+      { name: 'Python', level: 92 },
+      { name: 'PyTorch / YOLOv8', level: 90 },
+      { name: 'OpenCV', level: 88 },
+      { name: 'Scikit-learn', level: 85 },
+      { name: 'C / C++', level: 82 },
+      { name: 'Java', level: 78 },
+      { name: 'NumPy / Pandas', level: 88 },
+      { name: 'NVIDIA CUDA', level: 75 }
+    ],
     topSkills: ['Python', 'PyTorch', 'OpenCV'],
     skillColors: ['cyan', 'pink', 'amber'],
     projects: [
@@ -149,7 +149,7 @@ class PortfolioStore {
         supabase.from('projects').select('data'),
         supabase.from('connections').select('data')
       ]);
-      
+
       if (pData) this._community = pData.map(r => r.data);
       if (prData) this._collabProjects = prData.map(r => r.data);
       if (cData) this._connections = cData.map(r => r.data);
@@ -168,44 +168,44 @@ class PortfolioStore {
     // Prevent duplicates
     this._community = this._community.filter(p => p.id !== portfolio.id);
     this._community.push(portfolio);
-    
+
     // Save to Supabase
     try {
       await supabase.from('profiles').upsert({ id: portfolio.id, data: portfolio });
-    } catch(e) { console.error('Error saving portfolio:', e); }
+    } catch (e) { console.error('Error saving portfolio:', e); }
     return portfolio;
   }
 
   // Connections / teammate requests
   getConnections() { return this._connections; }
-  
+
   async sendConnectionRequest(from, toId) {
     const existing = this._connections.find(c => (c.from === from && c.to === toId) || (c.from === toId && c.to === from));
     if (existing) return existing;
     const conn = { from, to: toId, status: 'pending', createdAt: new Date().toISOString() };
     this._connections.push(conn);
-    
+
     // Save to Supabase
     try {
       const connId = `${from}_${toId}`;
       await supabase.from('connections').upsert({ id: connId, data: conn });
-    } catch(e) { console.error('Error saving connection:', e); }
+    } catch (e) { console.error('Error saving connection:', e); }
     return conn;
   }
-  
+
   async acceptConnectionRequest(from, toId) {
     const conn = this._connections.find(c => c.from === from && c.to === toId);
     if (!conn) return null;
     conn.status = 'connected';
-    
+
     // Save to Supabase
     try {
       const connId = `${from}_${toId}`;
       await supabase.from('connections').upsert({ id: connId, data: conn });
-    } catch(e) { console.error('Error accepting connection:', e); }
+    } catch (e) { console.error('Error accepting connection:', e); }
     return conn;
   }
-  
+
   getConnectionStatus(u1, u2) {
     const c = this._connections.find(c => (c.from === u1 && c.to === u2) || (c.from === u2 && c.to === u1));
     if (!c) return null;
@@ -221,17 +221,17 @@ class PortfolioStore {
 
   // Collaboration projects
   getCollabProjects() { return this._collabProjects; }
-  
+
   async addCollabProject(project) {
     this._collabProjects.push(project);
-    
+
     // Save to Supabase
     try {
       await supabase.from('projects').upsert({ id: project.id, data: project });
-    } catch(e) { console.error('Error saving project:', e); }
+    } catch (e) { console.error('Error saving project:', e); }
     return project;
   }
-  
+
   async sendProjectJoinRequest(projectId, username) {
     const p = this._collabProjects.find(p => p.id === projectId);
     if (p) {
@@ -240,7 +240,7 @@ class PortfolioStore {
         p.joinRequests.push(username);
         try {
           await supabase.from('projects').upsert({ id: p.id, data: p });
-        } catch(e) { console.error('Error requesting to join project:', e); }
+        } catch (e) { console.error('Error requesting to join project:', e); }
       }
     }
   }
@@ -254,7 +254,7 @@ class PortfolioStore {
       }
       try {
         await supabase.from('projects').upsert({ id: p.id, data: p });
-      } catch(e) { console.error('Error accepting join request:', e); }
+      } catch (e) { console.error('Error accepting join request:', e); }
     }
   }
 }
