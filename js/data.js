@@ -259,8 +259,13 @@ class PortfolioStore {
   }
 
   // ============ MESSAGING ============
+  // Normalize an identifier for consistent room ID generation
+  _normalizeId(id) {
+    return String(id).toLowerCase().replace(/\s+/g, '');
+  }
+
   getDMRoomId(u1, u2) {
-    return 'dm_' + [u1, u2].sort().join('_');
+    return 'dm_' + [this._normalizeId(u1), this._normalizeId(u2)].sort().join('_');
   }
 
   async loadMessages(roomId) {
