@@ -1,4 +1,4 @@
-/* PORTFOLIO BUILDER */
+
 .builder-page{padding-top:80px;position:relative;z-index:1;max-width:1000px;margin:0 auto;padding-left:2rem;padding-right:2rem;padding-bottom:4rem;}
 .builder-header{text-align:center;padding:3rem 0;}
 .builder-header h1{font-family:var(--font-heading);font-size:2.2rem;font-weight:700;margin-bottom:0.5rem;}
@@ -68,7 +68,7 @@
 .success-container h2{font-family:var(--font-heading);font-size:1.8rem;font-weight:700;margin-bottom:0.5rem;}
 .success-container p{color:var(--text-secondary);margin-bottom:2rem;}
 
-/* RESPONSIVE */
+
 @media(max-width:900px){
   .login-page{flex-direction:column;}
   .login-brand{padding:2rem;}

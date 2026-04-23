@@ -1,4 +1,4 @@
-/* PROFILE PAGE */
+
 .profile-page{padding-top:80px;position:relative;z-index:1;max-width:900px;margin:0 auto;padding-left:2rem;padding-right:2rem;padding-bottom:4rem;}
 .btn-back{display:inline-flex;align-items:center;gap:0.5rem;padding:10px 20px;background:var(--bg-glass);border:1px solid var(--border-subtle);border-radius:var(--radius-xl);color:var(--text-secondary);font-size:0.85rem;font-weight:500;margin-top:2rem;margin-bottom:2rem;transition:all var(--transition-fast);}
 .btn-back:hover{background:var(--bg-glass-hover);color:var(--text-primary);transform:translateX(-3px);}

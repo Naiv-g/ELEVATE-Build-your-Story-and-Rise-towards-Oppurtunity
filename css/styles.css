@@ -1,11 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
 
-/* =====================================================
-   LIGHT MODE (DEFAULT) — Soft Sage Morning Palette
-   Inspired by: calm mornings, soft nature, studio light
-===================================================== */
+
 :root {
-  --bg-primary: #f0f4f2;        /* warm sage-white */
+  --bg-primary: #f0f4f2;        
   --bg-secondary: #ffffff;
   --bg-card: rgba(255,255,255,0.88);
   --bg-glass: rgba(255,255,255,0.65);
@@ -17,10 +14,10 @@
   --gradient-cool: linear-gradient(135deg, #38bdf8, #6366f1);
   --gradient-green: linear-gradient(135deg, #34d399, #14b8a6);
 
-  --text-primary: #1e2d2b;      /* deep warm slate */
-  --text-secondary: #4a6371;    /* muted blue-gray */
+  --text-primary: #1e2d2b;      
+  --text-secondary: #4a6371;    
   --text-muted: #8fa6a0;
-  --text-accent: #0d9e8f;       /* rich teal */
+  --text-accent: #0d9e8f;       
 
   --border-subtle: rgba(0,0,0,0.06);
   --border-glass: rgba(0,0,0,0.08);
@@ -53,9 +50,7 @@
   --font-heading: 'Outfit', sans-serif;
 }
 
-/* =====================================================
-   DARK MODE — Deep Ocean Night
-===================================================== */
+
 [data-theme="dark"] {
   --bg-primary: #0d1117;
   --bg-secondary: #131920;
@@ -91,9 +86,7 @@
   --accent-amber: #fbbf24;
 }
 
-/* =====================================================
-   BASE
-===================================================== */
+
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
@@ -118,18 +111,16 @@ input,textarea,select{font-family:var(--font-body);outline:none;}
 .page{opacity:0;transform:translateY(12px);animation:pageEnter 0.45s var(--ease-out) forwards;}
 @keyframes pageEnter{to{opacity:1;transform:translateY(0);}}
 
-/* =====================================================
-   BACKGROUND ORBS
-===================================================== */
+
 .bg-orbs{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden;}
 .bg-orb{position:absolute;border-radius:50%;filter:blur(120px);animation:orbFloat 32s ease-in-out infinite;}
 
-/* Light mode: whisper-soft pastel orbs */
+
 .bg-orb--1{width:600px;height:600px;background:#99f6e4;opacity:0.42;top:-15%;left:-10%;animation-duration:34s;}
 .bg-orb--2{width:480px;height:480px;background:#ddd6fe;opacity:0.36;top:40%;right:-12%;animation-duration:28s;animation-delay:-9s;}
 .bg-orb--3{width:400px;height:400px;background:#bae6fd;opacity:0.30;bottom:-10%;left:32%;animation-duration:36s;animation-delay:-17s;}
 
-/* Dark mode: deep atmospheric orbs */
+
 [data-theme="dark"] .bg-orb--1{background:#0d9488;opacity:0.17;}
 [data-theme="dark"] .bg-orb--2{background:#4f46e5;opacity:0.15;}
 [data-theme="dark"] .bg-orb--3{background:#065f46;opacity:0.14;}
@@ -141,9 +132,7 @@ input,textarea,select{font-family:var(--font-body);outline:none;}
   75%{transform:translate(26px,16px) scale(1.02);}
 }
 
-/* =====================================================
-   GLASS CARDS
-===================================================== */
+
 .glass-card{
   background:var(--bg-glass);
   backdrop-filter:blur(18px);
@@ -160,9 +149,7 @@ input,textarea,select{font-family:var(--font-body);outline:none;}
   transform:translateY(-3px);
 }
 
-/* =====================================================
-   NAVBAR
-===================================================== */
+
 .navbar{
   display:flex;align-items:center;justify-content:space-between;
   padding:0 2rem;height:64px;
@@ -212,9 +199,7 @@ input,textarea,select{font-family:var(--font-body);outline:none;}
 [data-theme="dark"] .btn-logout{color:#fca5a5;background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.2);}
 .btn-logout:hover{background:rgba(239,68,68,0.14);}
 
-/* =====================================================
-   THEME TOGGLE BUTTON
-===================================================== */
+
 .theme-toggle{
   width:38px;height:38px;border-radius:var(--radius-md);
   background:var(--bg-glass);
@@ -230,9 +215,7 @@ input,textarea,select{font-family:var(--font-body);outline:none;}
   transform:scale(1.08);
 }
 
-/* =====================================================
-   SKILL TAGS
-===================================================== */
+
 .skill-tag{
   padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:500;
   background:rgba(20,184,166,0.09);
@@ -246,9 +229,7 @@ input,textarea,select{font-family:var(--font-body);outline:none;}
   color:#5eead4;
 }
 
-/* =====================================================
-   PRIMARY BUTTON
-===================================================== */
+
 .btn-primary{
   width:100%;padding:14px;
   background:var(--gradient-primary);
@@ -266,9 +247,7 @@ input,textarea,select{font-family:var(--font-body);outline:none;}
 .btn-primary:hover::before{opacity:1;}
 .btn-primary:active{transform:translateY(0);}
 
-/* =====================================================
-   TOAST
-===================================================== */
+
 .toast-container{position:fixed;bottom:2rem;right:2rem;z-index:9999;display:flex;flex-direction:column;gap:0.75rem;}
 .toast{
   padding:14px 22px;border-radius:var(--radius-md);

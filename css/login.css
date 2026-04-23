@@ -1,4 +1,4 @@
-/* LOGIN PAGE */
+
 .login-page{display:flex;min-height:100vh;position:relative;z-index:1;}
 .login-brand{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:4rem 3rem;position:relative;overflow:hidden;}
 .login-brand::before{content:'';position:absolute;inset:0;background:var(--gradient-primary);opacity:0.05;}

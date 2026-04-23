@@ -1,11 +1,9 @@
 import { portfolioStore } from '../data.js';
 import { renderNavbar } from '../components/navbar.js';
 
-// Module-level state
 let currentRoomId = null;
 let pollInterval = null;
 
-// ---- Unread tracking helpers ----
 function getSeenCount(roomId) {
   return parseInt(localStorage.getItem('msg_seen_' + roomId) || '0', 10);
 }
@@ -14,8 +12,8 @@ function setSeenCount(roomId, count) {
 }
 function recalcTotalUnread() {
   const rooms = JSON.parse(localStorage.getItem('elevate_msg_rooms') || '[]');
-  // Can't reload from Supabase here — we just sum what we know from cached seen vs stored counts
-  // Total is updated by background poll in app.js; here we just zero out the current room
+ 
+ 
 }
 function registerRoom(roomId) {
   const rooms = JSON.parse(localStorage.getItem('elevate_msg_rooms') || '[]');
@@ -35,16 +33,16 @@ function updateNavMsgBadge() {
 
 export function renderMessages(username) {
   const myProfileId = window.ElevateApp?.profileId || username;
-  // Get the definitive canonical ID for myself
+ 
   const myCanonical = portfolioStore.getCanonicalId(myProfileId) || portfolioStore.getCanonicalId(username);
 
-  // All known ways to identify me
+ 
   const myIds = new Set([
     username, myProfileId, myCanonical,
     username.toLowerCase(), myProfileId.toLowerCase(), myCanonical.toLowerCase()
   ]);
 
-  // Find all connected relationships, normalizing each side
+ 
   const connections = portfolioStore.getConnections().filter(c => {
     if (c.status !== 'connected') return false;
     const fromCan = portfolioStore.getCanonicalId(c.from);
@@ -52,7 +50,7 @@ export function renderMessages(username) {
     return myIds.has(fromCan) || myIds.has(toCan) || myIds.has(c.from) || myIds.has(c.to);
   });
 
-  // Resolve friend to canonical ID, deduplicate
+ 
   const friendSet = new Set();
   connections.forEach(c => {
     const fromCan = portfolioStore.getCanonicalId(c.from);
@@ -63,13 +61,13 @@ export function renderMessages(username) {
   });
   const connectedFriends = [...friendSet];
 
-  // Projects (check both ids)
+ 
   const myProjects = portfolioStore.getCollabProjects().filter(p =>
     myIds.has(p.owner) || myIds.has(portfolioStore.getCanonicalId(p.owner)) ||
     p.members.some(m => myIds.has(m) || myIds.has(portfolioStore.getCanonicalId(m)))
   );
 
-  // Build myIds including canonical for message alignment
+ 
   const myIdsForMsgs = new Set([...myIds, myCanonical]);
 
   const friendListHTML = connectedFriends.length === 0
@@ -228,7 +226,7 @@ async function loadAndRenderMessages(roomId, myProfileId, myIds) {
   }
 
   container.innerHTML = msgs.map(m => {
-    // "Mine" if sender matches any of my known identities (case-insensitive)
+   
     const isMine = myIds.has(m.sender) || myIds.has(m.sender.toLowerCase());
     const senderName = portfolioStore.getDisplayName(m.sender);
     return `

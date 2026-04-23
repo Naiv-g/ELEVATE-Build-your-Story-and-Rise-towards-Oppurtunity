@@ -4,7 +4,7 @@ import { renderNavbar } from '../components/navbar.js';
 export function renderFindTeammates(username) {
   const allProfiles = portfolioStore.getAllProfiles();
 
-  // Collect all unique skills
+ 
   const allSkills = new Set();
   allProfiles.forEach(p => {
     (p.topSkills || []).forEach(s => allSkills.add(s));
@@ -58,7 +58,7 @@ function initFindTeammates(username) {
     const query = searchInput.value.toLowerCase().trim();
     let profiles = portfolioStore.getAllProfiles();
 
-    // Text search
+   
     if (query) {
       profiles = profiles.filter(p => {
         const searchable = `${p.name} ${p.role} ${(p.topSkills||[]).join(' ')} ${(p.skills||[]).map(s => typeof s === 'string' ? s : s.name).join(' ')}`.toLowerCase();
@@ -66,7 +66,7 @@ function initFindTeammates(username) {
       });
     }
 
-    // Skill filters
+   
     if (activeFilters.size > 0) {
       profiles = profiles.filter(p => {
         const pSkills = new Set([
@@ -128,7 +128,7 @@ function initFindTeammates(username) {
       `;
     }).join('');
 
-    // Attach connect handlers
+   
     grid.querySelectorAll('.btn-connect-sm').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -144,10 +144,10 @@ function initFindTeammates(username) {
     });
   }
 
-  // Search
+ 
   searchInput.addEventListener('input', renderResults);
 
-  // Skill filter chips
+ 
   document.querySelectorAll('.filter-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       const skill = chip.dataset.skill;
@@ -162,7 +162,7 @@ function initFindTeammates(username) {
     });
   });
 
-  // Initial render
+ 
   renderResults();
 }
 

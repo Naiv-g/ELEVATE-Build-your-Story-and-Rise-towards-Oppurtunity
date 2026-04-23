@@ -42,10 +42,10 @@ export function renderProfile(memberId, username) {
     ? '<span class="profile-badge profile-badge--team">🏆 Core Team Member</span>'
     : '<span class="profile-badge profile-badge--community">🌍 Community Member</span>';
 
-  // Share link
+ 
   const shareURL = `${window.location.origin}${window.location.pathname}#/profile/${member.id}`;
 
-  // Connection button (only show if not viewing own profile)
+ 
   const connStatus = portfolioStore.getConnectionStatus(username, member.id);
   let connectBtnHTML = '';
   if (member.name !== username && member.id !== (window.ElevateApp?.profileId || username)) {
@@ -139,7 +139,7 @@ export function renderProfile(memberId, username) {
   return {
     html,
     init: () => {
-      // Share button
+     
       const shareBtn = document.getElementById('btn-share');
       if (shareBtn) {
         shareBtn.addEventListener('click', () => {
@@ -150,7 +150,7 @@ export function renderProfile(memberId, username) {
           });
         });
       }
-      // Connect button
+     
       const connBtn = document.getElementById('btn-connect');
       if (connBtn) {
         connBtn.addEventListener('click', () => {

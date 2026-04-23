@@ -125,7 +125,7 @@ function initBuilderEvents(username) {
     showToast('🎉 Portfolio published successfully!');
   });
 
-  // Skills input
+ 
   const skillsInput = document.getElementById('skills-input');
   const skillsContainer = document.getElementById('skills-container');
   skillsInput.addEventListener('keydown', (e) => {

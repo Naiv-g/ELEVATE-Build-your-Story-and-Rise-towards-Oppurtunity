@@ -1,7 +1,7 @@
 import { portfolioStore } from '../data.js';
 
 export function renderNavbar(username, activePage) {
-  // Theme state
+ 
   const isDark = document.body.getAttribute('data-theme') === 'dark';
   const themeIcon = isDark ? '☀️' : '🌙';
   const themeLabel = isDark ? 'Light mode' : 'Dark mode';
@@ -25,23 +25,22 @@ export function renderNavbar(username, activePage) {
     return `<a href="${l.hash}" class="nav-link${isActive}">${l.label}</a>`;
   }).join('');
 
-  // Link specific emails to their hardcoded profile
+ 
   let profileRoute = '#/home';
   if (window.ElevateApp && window.ElevateApp.profileId && ['naivaidhya', 'aarjav', 'aditya', 'devank'].includes(window.ElevateApp.profileId)) {
     profileRoute = '#/profile/' + window.ElevateApp.profileId;
   }
 
-  // Calculate connection requests
+ 
   let myProfileId = window.ElevateApp?.profileId || username;
   const pendingRequests = portfolioStore.getConnections().filter(c => c.to === myProfileId && c.status === 'pending');
-  
-// Global handler for project join requests
+  
 window.acceptProjectJoin = async (projectId, reqUsername) => {
   await portfolioStore.acceptProjectJoinRequest(projectId, reqUsername);
   if (window.ElevateApp) window.ElevateApp.route();
 };
 
-  // Calculate Friend Projects
+ 
   const myFriends = new Set();
   portfolioStore.getConnections().forEach(c => {
     if (c.status === 'connected') {
@@ -53,7 +52,7 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
   const friendProjects = portfolioStore.getCollabProjects()
     .filter(p => p.owner !== username && myFriends.has(p.owner));
 
-  // Calculate incoming Project Join Requests
+ 
   const myProjects = portfolioStore.getCollabProjects().filter(p => p.owner === username);
   const projectJoinRequests = [];
   myProjects.forEach(p => {
@@ -73,7 +72,7 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
 
   let notifsHTML = '';
   
-  // Render Pending Connections
+ 
   if (pendingRequests.length > 0) {
     notifsHTML += pendingRequests.map(r => `
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: var(--border-subtle); border-radius: 8px; margin-bottom: 5px;">
@@ -83,7 +82,7 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
     `).join('');
   }
 
-  // Render Project Join Requests
+ 
   if (projectJoinRequests.length > 0) {
     notifsHTML += projectJoinRequests.map(r => `
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(16,185,129,0.1); border-left: 3px solid #10b981; border-radius: 8px; margin-bottom: 5px;">
@@ -93,7 +92,7 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
     `).join('');
   }
 
-  // Render Friend Projects
+ 
   if (friendProjects.length > 0) {
     notifsHTML += friendProjects.map(p => `
       <div style="display: flex; flex-direction: column; padding: 10px; background: var(--border-subtle); border-left: 3px solid var(--accent-purple); border-radius: 8px; margin-bottom: 5px; cursor: pointer;" onclick="window.location.hash='#/collaborate'">
@@ -141,8 +140,7 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
     </nav>
   `;
 }
-
-// Global theme toggle — defined outside renderNavbar so it persists between re-renders
+
 window.toggleTheme = function() {
   const isDark = document.body.getAttribute('data-theme') === 'dark';
   const btn = document.getElementById('theme-toggle-btn');

@@ -15,17 +15,17 @@ class ElevateApp {
     window.addEventListener('hashchange', () => this.route());
     window.ElevateApp = this;
 
-    // Restore saved theme preference immediately (no flash)
+   
     const savedTheme = localStorage.getItem('elevate-theme');
     if (savedTheme === 'dark') {
       document.body.setAttribute('data-theme', 'dark');
     } else {
-      document.body.removeAttribute('data-theme'); // light is default
+      document.body.removeAttribute('data-theme');
     }
 
-    // Check existing session
+   
     this.initAuth();
-    // Background poll for unread messages (every 30s)
+   
     setInterval(() => this.checkUnreadMessages(), 30000);
   }
 

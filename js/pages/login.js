@@ -172,7 +172,7 @@ function initLoginEvents(onLogin, onSignup) {
       signupError.style.display = 'block';
     } else {
       if (data?.session) {
-         // Auto login if email confirmation is disabled
+        
          onSignup(name, data.user.id);
       } else {
          signupSuccess.textContent = "Success! Please check your email to confirm your account (if email confirmation is required by your Supabase project settings), or try logging in.";
@@ -181,7 +181,7 @@ function initLoginEvents(onLogin, onSignup) {
     }
   });
 
-  // Ripple on buttons
+ 
   document.querySelectorAll('.btn-primary').forEach(btn => {
     btn.addEventListener('click', addRipple);
   });

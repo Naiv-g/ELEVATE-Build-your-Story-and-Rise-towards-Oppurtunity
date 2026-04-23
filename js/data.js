@@ -1,4 +1,4 @@
-// Team members data 
+
 const TEAM_DATA = [
   {
     id: 'naivaidhya',
@@ -129,16 +129,13 @@ const TEAM_DATA = [
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const supabaseUrl = 'https://ayzbwvppkkiifgdcjirq.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF5emJ3dnBwa2tpaWZnZGNqaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NTgyNTgsImV4cCI6MjA5MTIzNDI1OH0.a_CPAD9k4y9lFnYW5uABrG27rb3T5bLAQfd_xLMiPzs';
-// @ts-ignore
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF5emJ3dnBwa2tpaWZnZGNqaXJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NTgyNTgsImV4cCI6MjA5MTIzNDI1OH0.a_CPAD9k4y9lFnYW5uABrG27rb3T5bLAQfd_xLMiPzs';
 const supabase = createClient(supabaseUrl, supabaseKey);
-
-// ===== Global Portfolio Store  =====
-// Persists user-created portfolios, connections, and projects via Supabase
+
 class PortfolioStore {
   constructor() {
     this._community = [];
-    this._connections = []; // { from, to, status }
+    this._connections = [];
     this._collabProjects = [];
   }
 
@@ -158,25 +155,25 @@ class PortfolioStore {
     }
   }
 
-  // Get all profiles: team + community
+ 
   getAllProfiles() { return [...TEAM_DATA, ...this._community]; }
   getCommunityProfiles() { return this._community; }
   getProfileById(id) { return this.getAllProfiles().find(p => p.id === id) || null; }
 
-  // Add a new user portfolio
+ 
   async addPortfolio(portfolio) {
-    // Prevent duplicates
+   
     this._community = this._community.filter(p => p.id !== portfolio.id);
     this._community.push(portfolio);
 
-    // Save to Supabase
+   
     try {
       await supabase.from('profiles').upsert({ id: portfolio.id, data: portfolio });
     } catch (e) { console.error('Error saving portfolio:', e); }
     return portfolio;
   }
 
-  // Connections / teammate requests
+ 
   getConnections() { return this._connections; }
 
   async sendConnectionRequest(from, toId) {
@@ -185,7 +182,7 @@ class PortfolioStore {
     const conn = { from, to: toId, status: 'pending', createdAt: new Date().toISOString() };
     this._connections.push(conn);
 
-    // Save to Supabase
+   
     try {
       const connId = `${from}_${toId}`;
       await supabase.from('connections').upsert({ id: connId, data: conn });
@@ -198,7 +195,7 @@ class PortfolioStore {
     if (!conn) return null;
     conn.status = 'connected';
 
-    // Save to Supabase
+   
     try {
       const connId = `${from}_${toId}`;
       await supabase.from('connections').upsert({ id: connId, data: conn });
@@ -209,23 +206,23 @@ class PortfolioStore {
   getConnectionStatus(u1, u2) {
     const c = this._connections.find(c => (c.from === u1 && c.to === u2) || (c.from === u2 && c.to === u1));
     if (!c) return null;
-    // If it's pending, but I am the receiver, we should probably differentiate so I don't see "Request Sent".
-    // Wait, the UI relies on 'pending' to mean "I sent a request".
-    // If u1 is the receiver and it's pending, return 'incoming_pending' instead of 'pending'.
+   
+   
+   
     if (c.status === 'pending') {
-      if (c.from === u1) return 'pending'; // I sent it
-      return 'incoming_pending'; // They sent it to me
+      if (c.from === u1) return 'pending';
+      return 'incoming_pending';
     }
-    return c.status; // 'connected'
+    return c.status;
   }
 
-  // Collaboration projects
+ 
   getCollabProjects() { return this._collabProjects; }
 
   async addCollabProject(project) {
     this._collabProjects.push(project);
 
-    // Save to Supabase
+   
     try {
       await supabase.from('projects').upsert({ id: project.id, data: project });
     } catch (e) { console.error('Error saving project:', e); }
@@ -258,13 +255,13 @@ class PortfolioStore {
     }
   }
 
-  // ============ MESSAGING ============
+ 
 
-  // Resolve ANY identifier (full name, email prefix, profileId) to the canonical profileId
+ 
   getCanonicalId(id) {
     if (!id) return '';
     const norm = String(id).toLowerCase().replace(/\s+/g, '');
-    // Check team data first
+   
     for (const p of TEAM_DATA) {
       if (p.id === id || p.name === id ||
           p.id.toLowerCase() === norm ||
@@ -272,7 +269,7 @@ class PortfolioStore {
         return p.id;
       }
     }
-    // Check community profiles
+   
     for (const p of this._community) {
       if (p.id === id || p.name === id ||
           (p.id && p.id.toLowerCase() === norm) ||
@@ -280,7 +277,7 @@ class PortfolioStore {
         return p.id || norm;
       }
     }
-    // Fallback: lowercase+no-spaces
+   
     return norm;
   }
 
@@ -290,16 +287,16 @@ class PortfolioStore {
     return 'dm_' + [c1, c2].sort().join('_');
   }
 
-  // Get the human-readable display name for any ID
+ 
   getDisplayName(id) {
     if (!id) return id;
-    // Check team data
+   
     const teamMatch = TEAM_DATA.find(p => p.id === id || p.name === id);
     if (teamMatch) return teamMatch.name;
-    // Check community profiles
+   
     const commMatch = this._community.find(p => p.id === id || p.id === this.getCanonicalId(id));
     if (commMatch) return commMatch.name || id;
-    // If it looks like an auto-generated ID (user_xxx_timestamp), make it prettier
+   
     if (String(id).startsWith('user_')) {
       return id.replace(/^user_/, '').replace(/__\d+$/, '').replace(/_/g, ' ')
         .split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ').trim();

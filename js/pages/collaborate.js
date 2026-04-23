@@ -119,7 +119,7 @@ function initCollaborate(username) {
       `;
     }).join('');
 
-    // Join buttons
+   
     list.querySelectorAll('.btn-join:not([disabled])').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = btn.dataset.id;

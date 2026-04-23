@@ -1,4 +1,4 @@
-/* NAVBAR */
+
 .navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 3rem;display:flex;align-items:center;justify-content:space-between;background:rgba(240,244,242,0.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle);transition:background 0.4s ease;}
 [data-theme="dark"] .navbar{background:rgba(13,17,23,0.88);}
 .navbar-logo{font-family:var(--font-heading);font-size:1.5rem;font-weight:700;background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;transition:transform var(--transition-fast);}
@@ -10,7 +10,7 @@
 .btn-logout{padding:8px 16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:var(--radius-sm);color:#f87171;font-size:0.85rem;font-weight:500;transition:all var(--transition-fast);}
 .btn-logout:hover{background:rgba(239,68,68,0.2);transform:translateY(-1px);}
 
-/* HOME PAGE */
+
 .home-page{padding-top:80px;position:relative;z-index:1;}
 .home-hero{text-align:center;padding:4rem 3rem 2rem;}
 .home-hero h1{font-family:var(--font-heading);font-size:2.8rem;font-weight:700;margin-bottom:1rem;line-height:1.2;}
@@ -51,7 +51,7 @@
 .team-card:hover .view-profile-btn{opacity:1;transform:translateY(0);}
 .view-profile-btn:hover{background:rgba(45,212,191,0.12);}
 
-/* Build Portfolio CTA */
+
 .build-portfolio-section{padding:2rem 3rem 4rem;max-width:1200px;margin:0 auto;}
 .build-portfolio-cta{padding:3rem 4rem;text-align:center;position:relative;overflow:hidden;}
 .build-portfolio-cta::before{content:'';position:absolute;inset:0;background:var(--gradient-primary);opacity:0.06;border-radius:var(--radius-lg);}

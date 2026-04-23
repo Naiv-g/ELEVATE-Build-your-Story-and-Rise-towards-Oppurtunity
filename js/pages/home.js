@@ -1,7 +1,6 @@
 import { TEAM_DATA, portfolioStore } from '../data.js';
 import { renderNavbar } from '../components/navbar.js';
-
-// Attach global handler for accepting requests
+
 window.acceptConnection = async (from, toId) => {
   await portfolioStore.acceptConnectionRequest(from, toId);
   if (window.ElevateApp) window.ElevateApp.route();
