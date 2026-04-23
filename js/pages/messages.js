@@ -5,6 +5,34 @@ import { renderNavbar } from '../components/navbar.js';
 let currentRoomId = null;
 let pollInterval = null;
 
+// ---- Unread tracking helpers ----
+function getSeenCount(roomId) {
+  return parseInt(localStorage.getItem('msg_seen_' + roomId) || '0', 10);
+}
+function setSeenCount(roomId, count) {
+  localStorage.setItem('msg_seen_' + roomId, count);
+}
+function recalcTotalUnread() {
+  const rooms = JSON.parse(localStorage.getItem('elevate_msg_rooms') || '[]');
+  // Can't reload from Supabase here — we just sum what we know from cached seen vs stored counts
+  // Total is updated by background poll in app.js; here we just zero out the current room
+}
+function registerRoom(roomId) {
+  const rooms = JSON.parse(localStorage.getItem('elevate_msg_rooms') || '[]');
+  if (!rooms.includes(roomId)) {
+    rooms.push(roomId);
+    localStorage.setItem('elevate_msg_rooms', JSON.stringify(rooms));
+  }
+}
+function updateNavMsgBadge() {
+  const total = parseInt(localStorage.getItem('elevate_msg_unread') || '0', 10);
+  const badge = document.getElementById('msg-nav-badge');
+  if (badge) {
+    badge.textContent = total > 0 ? total : '';
+    badge.style.display = total > 0 ? 'flex' : 'none';
+  }
+}
+
 export function renderMessages(username) {
   const myProfileId = window.ElevateApp?.profileId || username;
 
@@ -170,6 +198,19 @@ async function loadAndRenderMessages(roomId, username) {
   const msgs = await portfolioStore.loadMessages(roomId);
   const container = document.getElementById('chat-messages');
   if (!container || currentRoomId !== roomId) return;
+
+  // Register room so background poll can track it
+  registerRoom(roomId);
+
+  // Mark as seen — user is actively viewing this room
+  const prevSeen = getSeenCount(roomId);
+  if (msgs.length > prevSeen) {
+    const newMsgs = msgs.length - prevSeen;
+    const currentTotal = parseInt(localStorage.getItem('elevate_msg_unread') || '0', 10);
+    localStorage.setItem('elevate_msg_unread', Math.max(0, currentTotal - newMsgs));
+  }
+  setSeenCount(roomId, msgs.length);
+  updateNavMsgBadge();
 
   if (msgs.length === 0) {
     container.innerHTML = '<div class="no-messages">No messages yet — say hello! 👋</div>';

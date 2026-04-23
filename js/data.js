@@ -265,9 +265,11 @@ class PortfolioStore {
 
   async loadMessages(roomId) {
     try {
-      const { data } = await supabase.from('messages').select('data').eq('id', roomId).single();
+      const { data, error } = await supabase.from('messages').select('data').eq('id', roomId).maybeSingle();
+      if (error) { console.error('loadMessages error:', error); return []; }
       return (data && data.data) ? data.data : [];
     } catch (e) {
+      console.error('loadMessages exception:', e);
       return [];
     }
   }
@@ -276,9 +278,8 @@ class PortfolioStore {
     const existing = await this.loadMessages(roomId);
     const msg = { sender, text, timestamp: new Date().toISOString() };
     const updated = [...existing, msg];
-    try {
-      await supabase.from('messages').upsert({ id: roomId, data: updated });
-    } catch (e) { console.error('Error sending message:', e); }
+    const { error } = await supabase.from('messages').upsert({ id: roomId, data: updated });
+    if (error) console.error('sendMessage error:', error);
     return msg;
   }
 }

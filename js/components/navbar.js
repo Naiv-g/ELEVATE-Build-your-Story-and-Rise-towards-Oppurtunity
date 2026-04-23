@@ -14,8 +14,14 @@ export function renderNavbar(username, activePage) {
     { hash: '#/builder', label: '🚀 Build Portfolio', id: 'builder' },
   ];
 
+  const msgUnread = parseInt(localStorage.getItem('elevate_msg_unread') || '0', 10);
+
   const linksHTML = navLinks.map(l => {
     const isActive = activePage === l.id ? ' nav-link--active' : '';
+    if (l.id === 'messages') {
+      const badge = `<span id="msg-nav-badge" style="display:${msgUnread > 0 ? 'flex' : 'none'}; align-items:center; justify-content:center; position:absolute; top:-4px; right:-6px; background:#ef4444; color:white; border-radius:50%; font-size:0.58rem; width:16px; height:16px; font-weight:700;">${msgUnread > 0 ? msgUnread : ''}</span>`;
+      return `<a href="${l.hash}" class="nav-link${isActive}" style="position:relative;">${l.label}${badge}</a>`;
+    }
     return `<a href="${l.hash}" class="nav-link${isActive}">${l.label}</a>`;
   }).join('');
 

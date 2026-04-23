@@ -25,6 +25,41 @@ class ElevateApp {
 
     // Check existing session
     this.initAuth();
+    // Background poll for unread messages (every 30s)
+    setInterval(() => this.checkUnreadMessages(), 30000);
+  }
+
+  async checkUnreadMessages() {
+    if (!this.isLoggedIn) return;
+    const myProfileId = this.profileId || this.username;
+    const connections = portfolioStore.getConnections().filter(c =>
+      c.status === 'connected' && (c.from === myProfileId || c.to === myProfileId)
+    );
+    const friends = connections.map(c => c.from === myProfileId ? c.to : c.from);
+    const myProjects = portfolioStore.getCollabProjects().filter(p =>
+      p.owner === this.username || p.members.includes(this.username)
+    );
+
+    let total = 0;
+    for (const friend of friends) {
+      const roomId = portfolioStore.getDMRoomId(myProfileId, friend);
+      const msgs = await portfolioStore.loadMessages(roomId);
+      const seen = parseInt(localStorage.getItem('msg_seen_' + roomId) || '0', 10);
+      total += Math.max(0, msgs.length - seen);
+    }
+    for (const p of myProjects) {
+      const roomId = 'proj_' + p.id;
+      const msgs = await portfolioStore.loadMessages(roomId);
+      const seen = parseInt(localStorage.getItem('msg_seen_' + roomId) || '0', 10);
+      total += Math.max(0, msgs.length - seen);
+    }
+
+    localStorage.setItem('elevate_msg_unread', total);
+    const badge = document.getElementById('msg-nav-badge');
+    if (badge) {
+      badge.textContent = total > 0 ? total : '';
+      badge.style.display = total > 0 ? 'flex' : 'none';
+    }
   }
 
   async initAuth() {
