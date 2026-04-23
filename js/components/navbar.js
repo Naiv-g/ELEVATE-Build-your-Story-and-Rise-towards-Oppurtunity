@@ -1,6 +1,11 @@
 import { portfolioStore } from '../data.js';
 
 export function renderNavbar(username, activePage) {
+  // Theme state
+  const isDark = document.body.getAttribute('data-theme') === 'dark';
+  const themeIcon = isDark ? '☀️' : '🌙';
+  const themeLabel = isDark ? 'Light mode' : 'Dark mode';
+
   const navLinks = [
     { hash: '#/home', label: '🏠 Home', id: 'home' },
     { hash: '#/find-teammates', label: '🤝 Find Teammates', id: 'find-teammates' },
@@ -113,12 +118,13 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
             ${bellBadge}
           </button>
           
-          <div id="notif-dropdown" class="hidden" style="position: absolute; top: 120%; right: 0; width: 280px; background: rgba(15,15,20, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 1000; display: flex; flex-direction: column; gap: 5px;">
+          <div id="notif-dropdown" class="hidden" style="position: absolute; top: 120%; right: 0; width: 280px; background: var(--bg-secondary); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); border-radius: 12px; padding: 12px; box-shadow: var(--shadow-lg); z-index: 1000; display: flex; flex-direction: column; gap: 5px;">
              <div style="font-size: 0.9rem; font-weight: 600; color: white; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Notifications</div>
              ${notifsHTML}
           </div>
         </div>
 
+        <button class="theme-toggle" id="theme-toggle-btn" title="${themeLabel}">${themeIcon}</button>
         <button class="navbar-user" onclick="window.location.hash='${profileRoute}'" title="View Profile">
           <span>👋</span>
           <span>${username || 'User'}</span>
@@ -127,4 +133,25 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
       </div>
     </nav>
   `;
+
+  // Wire up toggle after render
+  requestAnimationFrame(() => {
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        const isNowDark = document.body.getAttribute('data-theme') === 'dark';
+        if (isNowDark) {
+          document.body.removeAttribute('data-theme');
+          localStorage.setItem('elevate-theme', 'light');
+          btn.textContent = '🌙';
+          btn.title = 'Dark mode';
+        } else {
+          document.body.setAttribute('data-theme', 'dark');
+          localStorage.setItem('elevate-theme', 'dark');
+          btn.textContent = '☀️';
+          btn.title = 'Light mode';
+        }
+      });
+    }
+  });
 }

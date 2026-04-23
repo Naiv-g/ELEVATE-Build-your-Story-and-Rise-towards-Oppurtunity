@@ -13,7 +13,15 @@ class ElevateApp {
     this.username = '';
     window.addEventListener('hashchange', () => this.route());
     window.ElevateApp = this;
-    
+
+    // Restore saved theme preference immediately (no flash)
+    const savedTheme = localStorage.getItem('elevate-theme');
+    if (savedTheme === 'dark') {
+      document.body.setAttribute('data-theme', 'dark');
+    } else {
+      document.body.removeAttribute('data-theme'); // light is default
+    }
+
     // Check existing session
     this.initAuth();
   }
