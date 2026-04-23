@@ -36,17 +36,21 @@ function updateNavMsgBadge() {
 export function renderMessages(username) {
   const myProfileId = window.ElevateApp?.profileId || username;
 
-  // Connected friends for DMs
+  // Filter connections matching EITHER username OR profileId
   const connections = portfolioStore.getConnections().filter(c =>
-    c.status === 'connected' && (c.from === myProfileId || c.to === myProfileId)
+    c.status === 'connected' &&
+    (c.from === myProfileId || c.to === myProfileId ||
+     c.from === username    || c.to === username)
   );
-  const connectedFriends = connections.map(c =>
-    c.from === myProfileId ? c.to : c.from
-  );
+  const connectedFriends = [...new Set(connections.map(c => {
+    const isFrom = c.from === myProfileId || c.from === username;
+    return isFrom ? c.to : c.from;
+  }))];
 
-  // Projects the user owns or is a member of
+  // Projects the user owns or is a member of (check both ids)
   const myProjects = portfolioStore.getCollabProjects().filter(p =>
-    p.owner === username || p.members.includes(username)
+    p.owner === username || p.owner === myProfileId ||
+    p.members.includes(username) || p.members.includes(myProfileId)
   );
 
   const friendListHTML = connectedFriends.length === 0
@@ -128,11 +132,11 @@ export function renderMessages(username) {
     </div>
   `;
 
-  return { html, init: () => initMessages(username) };
+  // Pass BOTH username and myProfileId to init
+  return { html, init: () => initMessages(username, myProfileId) };
 }
 
-function initMessages(username) {
-  // Clear any old poll
+function initMessages(username, myProfileId) {
   if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
   currentRoomId = null;
 
@@ -140,10 +144,12 @@ function initMessages(username) {
     item.addEventListener('click', () => {
       document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
-      openChat(item.dataset.roomId, item.dataset.roomName, item.dataset.roomType, username);
+      // Use myProfileId as sender so it matches how connections are stored
+      openChat(item.dataset.roomId, item.dataset.roomName, item.dataset.roomType, myProfileId);
     });
   });
 }
+
 
 async function openChat(roomId, roomName, roomType, username) {
   currentRoomId = roomId;
