@@ -230,9 +230,10 @@ async function loadAndRenderMessages(roomId, myProfileId, myIds) {
   container.innerHTML = msgs.map(m => {
     // "Mine" if sender matches any of my known identities (case-insensitive)
     const isMine = myIds.has(m.sender) || myIds.has(m.sender.toLowerCase());
+    const senderName = portfolioStore.getDisplayName(m.sender);
     return `
       <div class="message-bubble ${isMine ? 'message-mine' : 'message-theirs'}">
-        ${!isMine ? `<div class="message-sender">${escapeHtml(m.sender)}</div>` : ''}
+        ${!isMine ? `<div class="message-sender">${escapeHtml(senderName)}</div>` : ''}
         <div class="message-text">${escapeHtml(m.text)}</div>
         <div class="message-time">${formatTime(m.timestamp)}</div>
       </div>
