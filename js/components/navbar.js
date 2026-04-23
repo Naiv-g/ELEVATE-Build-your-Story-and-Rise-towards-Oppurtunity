@@ -124,7 +124,7 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
           </div>
         </div>
 
-        <button class="theme-toggle" id="theme-toggle-btn" title="${themeLabel}">${themeIcon}</button>
+        <button class="theme-toggle" id="theme-toggle-btn" onclick="window.toggleTheme()" title="${themeLabel}">${themeIcon}</button>
         <button class="navbar-user" onclick="window.location.hash='${profileRoute}'" title="View Profile">
           <span>👋</span>
           <span>${username || 'User'}</span>
@@ -133,25 +133,20 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
       </div>
     </nav>
   `;
-
-  // Wire up toggle after render
-  requestAnimationFrame(() => {
-    const btn = document.getElementById('theme-toggle-btn');
-    if (btn) {
-      btn.addEventListener('click', () => {
-        const isNowDark = document.body.getAttribute('data-theme') === 'dark';
-        if (isNowDark) {
-          document.body.removeAttribute('data-theme');
-          localStorage.setItem('elevate-theme', 'light');
-          btn.textContent = '🌙';
-          btn.title = 'Dark mode';
-        } else {
-          document.body.setAttribute('data-theme', 'dark');
-          localStorage.setItem('elevate-theme', 'dark');
-          btn.textContent = '☀️';
-          btn.title = 'Light mode';
-        }
-      });
-    }
-  });
 }
+
+// Global theme toggle — defined outside renderNavbar so it persists between re-renders
+window.toggleTheme = function() {
+  const isDark = document.body.getAttribute('data-theme') === 'dark';
+  const btn = document.getElementById('theme-toggle-btn');
+  if (isDark) {
+    document.body.removeAttribute('data-theme');
+    localStorage.setItem('elevate-theme', 'light');
+    if (btn) { btn.textContent = '🌙'; btn.title = 'Dark mode'; }
+  } else {
+    document.body.setAttribute('data-theme', 'dark');
+    localStorage.setItem('elevate-theme', 'dark');
+    if (btn) { btn.textContent = '☀️'; btn.title = 'Light mode'; }
+  }
+};
+
