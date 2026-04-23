@@ -291,22 +291,27 @@ class PortfolioStore {
   }
 
   async loadMessages(roomId) {
+    console.log('[MSG] loadMessages roomId:', roomId);
     try {
       const { data, error } = await supabase.from('messages').select('data').eq('id', roomId).maybeSingle();
-      if (error) { console.error('loadMessages error:', error); return []; }
-      return (data && data.data) ? data.data : [];
+      if (error) { console.error('[MSG] loadMessages error:', error); return []; }
+      const msgs = (data && data.data) ? data.data : [];
+      console.log('[MSG] loadMessages result:', msgs.length, 'messages');
+      return msgs;
     } catch (e) {
-      console.error('loadMessages exception:', e);
+      console.error('[MSG] loadMessages exception:', e);
       return [];
     }
   }
 
   async sendMessage(roomId, sender, text) {
+    console.log('[MSG] sendMessage roomId:', roomId, 'sender:', sender);
     const existing = await this.loadMessages(roomId);
     const msg = { sender, text, timestamp: new Date().toISOString() };
     const updated = [...existing, msg];
     const { error } = await supabase.from('messages').upsert({ id: roomId, data: updated });
-    if (error) console.error('sendMessage error:', error);
+    if (error) console.error('[MSG] sendMessage error:', error);
+    else console.log('[MSG] sendMessage success, total msgs:', updated.length);
     return msg;
   }
 }
