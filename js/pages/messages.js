@@ -74,15 +74,20 @@ export function renderMessages(username) {
 
   const friendListHTML = connectedFriends.length === 0
     ? '<div class="sidebar-empty">Connect with people to start a DM</div>'
-    : connectedFriends.map(friend => `
-        <div class="chat-item" data-room-id="${portfolioStore.getDMRoomId(myCanonical, friend)}" data-room-name="${friend}" data-room-type="dm">
-          <div class="chat-item-avatar">${friend[0].toUpperCase()}</div>
-          <div class="chat-item-info">
-            <div class="chat-item-name">${friend}</div>
-            <div class="chat-item-preview">Direct Message</div>
+    : connectedFriends.map(friend => {
+        const displayName = portfolioStore.getDisplayName(friend);
+        const roomId = portfolioStore.getDMRoomId(myCanonical, friend);
+        return `
+          <div class="chat-item" data-room-id="${roomId}" data-room-name="${displayName}" data-room-type="dm" data-friend-id="${friend}">
+            <div class="chat-item-avatar">${displayName[0].toUpperCase()}</div>
+            <div class="chat-item-info">
+              <div class="chat-item-name">${displayName}</div>
+              <div class="chat-item-preview">Direct Message</div>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+
 
   const projectListHTML = myProjects.length === 0
     ? '<div class="sidebar-empty">Join a project to access team chat</div>'

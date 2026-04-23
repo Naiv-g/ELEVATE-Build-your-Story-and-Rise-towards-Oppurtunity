@@ -290,6 +290,23 @@ class PortfolioStore {
     return 'dm_' + [c1, c2].sort().join('_');
   }
 
+  // Get the human-readable display name for any ID
+  getDisplayName(id) {
+    if (!id) return id;
+    // Check team data
+    const teamMatch = TEAM_DATA.find(p => p.id === id || p.name === id);
+    if (teamMatch) return teamMatch.name;
+    // Check community profiles
+    const commMatch = this._community.find(p => p.id === id || p.id === this.getCanonicalId(id));
+    if (commMatch) return commMatch.name || id;
+    // If it looks like an auto-generated ID (user_xxx_timestamp), make it prettier
+    if (String(id).startsWith('user_')) {
+      return id.replace(/^user_/, '').replace(/__\d+$/, '').replace(/_/g, ' ')
+        .split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ').trim();
+    }
+    return id;
+  }
+
   async loadMessages(roomId) {
     try {
       const { data, error } = await supabase.from('messages').select('data').eq('id', roomId).maybeSingle();
