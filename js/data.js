@@ -259,13 +259,35 @@ class PortfolioStore {
   }
 
   // ============ MESSAGING ============
-  // Normalize an identifier for consistent room ID generation
-  _normalizeId(id) {
-    return String(id).toLowerCase().replace(/\s+/g, '');
+
+  // Resolve ANY identifier (full name, email prefix, profileId) to the canonical profileId
+  getCanonicalId(id) {
+    if (!id) return '';
+    const norm = String(id).toLowerCase().replace(/\s+/g, '');
+    // Check team data first
+    for (const p of TEAM_DATA) {
+      if (p.id === id || p.name === id ||
+          p.id.toLowerCase() === norm ||
+          (p.name && p.name.toLowerCase().replace(/\s+/g, '') === norm)) {
+        return p.id;
+      }
+    }
+    // Check community profiles
+    for (const p of this._community) {
+      if (p.id === id || p.name === id ||
+          (p.id && p.id.toLowerCase() === norm) ||
+          (p.name && p.name.toLowerCase().replace(/\s+/g, '') === norm)) {
+        return p.id || norm;
+      }
+    }
+    // Fallback: lowercase+no-spaces
+    return norm;
   }
 
   getDMRoomId(u1, u2) {
-    return 'dm_' + [this._normalizeId(u1), this._normalizeId(u2)].sort().join('_');
+    const c1 = this.getCanonicalId(u1);
+    const c2 = this.getCanonicalId(u2);
+    return 'dm_' + [c1, c2].sort().join('_');
   }
 
   async loadMessages(roomId) {

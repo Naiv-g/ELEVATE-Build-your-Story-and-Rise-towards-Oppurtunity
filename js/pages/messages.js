@@ -35,38 +35,47 @@ function updateNavMsgBadge() {
 
 export function renderMessages(username) {
   const myProfileId = window.ElevateApp?.profileId || username;
-  // All known identifiers for the current user
-  const myIds = new Set([username, myProfileId, username.toLowerCase(), myProfileId.toLowerCase()]);
+  // Get the definitive canonical ID for myself
+  const myCanonical = portfolioStore.getCanonicalId(myProfileId) || portfolioStore.getCanonicalId(username);
 
-  // Get all connected friends, deduplicate smartly
-  const connections = portfolioStore.getConnections().filter(c =>
-    c.status === 'connected' && (myIds.has(c.from) || myIds.has(c.to))
-  );
+  // All known ways to identify me
+  const myIds = new Set([
+    username, myProfileId, myCanonical,
+    username.toLowerCase(), myProfileId.toLowerCase(), myCanonical.toLowerCase()
+  ]);
 
-  const rawFriends = connections.map(c =>
-    myIds.has(c.from) ? c.to : c.from
-  );
-
-  // Deduplicate: if 'aditya' and 'Aditya Rawat' both appear, keep 'aditya' (no spaces)
-  const friendMap = {};
-  rawFriends.forEach(f => {
-    const key = f.toLowerCase().replace(/\s+/g, '');
-    // Prefer the version without spaces (profileId style)
-    if (!friendMap[key] || (!f.includes(' ') && friendMap[key].includes(' '))) {
-      friendMap[key] = f;
-    }
+  // Find all connected relationships, normalizing each side
+  const connections = portfolioStore.getConnections().filter(c => {
+    if (c.status !== 'connected') return false;
+    const fromCan = portfolioStore.getCanonicalId(c.from);
+    const toCan   = portfolioStore.getCanonicalId(c.to);
+    return myIds.has(fromCan) || myIds.has(toCan) || myIds.has(c.from) || myIds.has(c.to);
   });
-  const connectedFriends = Object.values(friendMap);
 
-  // Projects (check both identities)
+  // Resolve friend to canonical ID, deduplicate
+  const friendSet = new Set();
+  connections.forEach(c => {
+    const fromCan = portfolioStore.getCanonicalId(c.from);
+    const toCan   = portfolioStore.getCanonicalId(c.to);
+    const isMe = myIds.has(fromCan) || myIds.has(c.from);
+    const friend = isMe ? toCan : fromCan;
+    if (friend && !myIds.has(friend)) friendSet.add(friend);
+  });
+  const connectedFriends = [...friendSet];
+
+  // Projects (check both ids)
   const myProjects = portfolioStore.getCollabProjects().filter(p =>
-    myIds.has(p.owner) || p.members.some(m => myIds.has(m))
+    myIds.has(p.owner) || myIds.has(portfolioStore.getCanonicalId(p.owner)) ||
+    p.members.some(m => myIds.has(m) || myIds.has(portfolioStore.getCanonicalId(m)))
   );
+
+  // Build myIds including canonical for message alignment
+  const myIdsForMsgs = new Set([...myIds, myCanonical]);
 
   const friendListHTML = connectedFriends.length === 0
     ? '<div class="sidebar-empty">Connect with people to start a DM</div>'
     : connectedFriends.map(friend => `
-        <div class="chat-item" data-room-id="${portfolioStore.getDMRoomId(myProfileId, friend)}" data-room-name="${friend}" data-room-type="dm">
+        <div class="chat-item" data-room-id="${portfolioStore.getDMRoomId(myCanonical, friend)}" data-room-name="${friend}" data-room-type="dm">
           <div class="chat-item-avatar">${friend[0].toUpperCase()}</div>
           <div class="chat-item-info">
             <div class="chat-item-name">${friend}</div>
@@ -97,9 +106,7 @@ export function renderMessages(username) {
     <div class="messages-page page">
       <div class="messages-container">
         <div class="messages-sidebar glass-card">
-          <div class="sidebar-header">
-            <div class="sidebar-title">💬 Messages</div>
-          </div>
+          <div class="sidebar-header"><div class="sidebar-title">💬 Messages</div></div>
           <div class="sidebar-body">
             <div class="sidebar-section-label">Direct Messages</div>
             ${friendListHTML}
@@ -134,21 +141,21 @@ export function renderMessages(username) {
     </div>
   `;
 
-  return { html, init: () => initMessages(myProfileId, myIds) };
+  return { html, init: () => initMessages(myCanonical, myIdsForMsgs) };
 }
 
-function initMessages(myProfileId, myIds) {
+function initMessages(myCanonical, myIds) {
   if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
   currentRoomId = null;
-
   document.querySelectorAll('.chat-item').forEach(item => {
     item.addEventListener('click', () => {
       document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
-      openChat(item.dataset.roomId, item.dataset.roomName, item.dataset.roomType, myProfileId, myIds);
+      openChat(item.dataset.roomId, item.dataset.roomName, item.dataset.roomType, myCanonical, myIds);
     });
   });
 }
+
 
 
 async function openChat(roomId, roomName, roomType, myProfileId, myIds) {
