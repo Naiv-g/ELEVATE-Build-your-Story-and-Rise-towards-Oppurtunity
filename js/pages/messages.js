@@ -35,22 +35,32 @@ function updateNavMsgBadge() {
 
 export function renderMessages(username) {
   const myProfileId = window.ElevateApp?.profileId || username;
+  // All known identifiers for the current user
+  const myIds = new Set([username, myProfileId, username.toLowerCase(), myProfileId.toLowerCase()]);
 
-  // Filter connections matching EITHER username OR profileId
+  // Get all connected friends, deduplicate smartly
   const connections = portfolioStore.getConnections().filter(c =>
-    c.status === 'connected' &&
-    (c.from === myProfileId || c.to === myProfileId ||
-     c.from === username    || c.to === username)
+    c.status === 'connected' && (myIds.has(c.from) || myIds.has(c.to))
   );
-  const connectedFriends = [...new Set(connections.map(c => {
-    const isFrom = c.from === myProfileId || c.from === username;
-    return isFrom ? c.to : c.from;
-  }))];
 
-  // Projects the user owns or is a member of (check both ids)
+  const rawFriends = connections.map(c =>
+    myIds.has(c.from) ? c.to : c.from
+  );
+
+  // Deduplicate: if 'aditya' and 'Aditya Rawat' both appear, keep 'aditya' (no spaces)
+  const friendMap = {};
+  rawFriends.forEach(f => {
+    const key = f.toLowerCase().replace(/\s+/g, '');
+    // Prefer the version without spaces (profileId style)
+    if (!friendMap[key] || (!f.includes(' ') && friendMap[key].includes(' '))) {
+      friendMap[key] = f;
+    }
+  });
+  const connectedFriends = Object.values(friendMap);
+
+  // Projects (check both identities)
   const myProjects = portfolioStore.getCollabProjects().filter(p =>
-    p.owner === username || p.owner === myProfileId ||
-    p.members.includes(username) || p.members.includes(myProfileId)
+    myIds.has(p.owner) || p.members.some(m => myIds.has(m))
   );
 
   const friendListHTML = connectedFriends.length === 0
@@ -86,8 +96,6 @@ export function renderMessages(username) {
     </div>
     <div class="messages-page page">
       <div class="messages-container">
-
-        <!-- Sidebar -->
         <div class="messages-sidebar glass-card">
           <div class="sidebar-header">
             <div class="sidebar-title">💬 Messages</div>
@@ -99,15 +107,12 @@ export function renderMessages(username) {
             ${projectListHTML}
           </div>
         </div>
-
-        <!-- Chat Area -->
         <div class="chat-area glass-card">
           <div class="chat-empty-state" id="chat-empty">
             <div class="chat-empty-icon">💬</div>
             <h3>Select a conversation</h3>
             <p>Pick a friend for a DM, or a project for team chat</p>
           </div>
-
           <div class="chat-content hidden" id="chat-content">
             <div class="chat-header">
               <div class="chat-header-avatar" id="chat-header-avatar">?</div>
@@ -116,27 +121,23 @@ export function renderMessages(username) {
                 <div class="chat-header-sub" id="chat-header-sub"></div>
               </div>
             </div>
-
             <div class="chat-messages" id="chat-messages">
               <div class="no-messages">Loading…</div>
             </div>
-
             <div class="chat-input-area">
               <input type="text" class="chat-input" id="chat-input" placeholder="Type a message and hit Enter…" autocomplete="off" />
               <button class="chat-send-btn" id="chat-send-btn">Send ➤</button>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   `;
 
-  // Pass BOTH username and myProfileId to init
-  return { html, init: () => initMessages(username, myProfileId) };
+  return { html, init: () => initMessages(myProfileId, myIds) };
 }
 
-function initMessages(username, myProfileId) {
+function initMessages(myProfileId, myIds) {
   if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
   currentRoomId = null;
 
@@ -144,22 +145,18 @@ function initMessages(username, myProfileId) {
     item.addEventListener('click', () => {
       document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
-      // Use myProfileId as sender so it matches how connections are stored
-      openChat(item.dataset.roomId, item.dataset.roomName, item.dataset.roomType, myProfileId);
+      openChat(item.dataset.roomId, item.dataset.roomName, item.dataset.roomType, myProfileId, myIds);
     });
   });
 }
 
 
-async function openChat(roomId, roomName, roomType, username) {
+async function openChat(roomId, roomName, roomType, myProfileId, myIds) {
   currentRoomId = roomId;
 
-  // Show chat panel
   document.getElementById('chat-empty').classList.add('hidden');
-  const content = document.getElementById('chat-content');
-  content.classList.remove('hidden');
+  document.getElementById('chat-content').classList.remove('hidden');
 
-  // Header
   const avatarEl = document.getElementById('chat-header-avatar');
   avatarEl.textContent = roomType === 'project' ? '⚡' : roomName[0].toUpperCase();
   avatarEl.style.background = roomType === 'project' ? 'var(--gradient-cool)' : 'var(--gradient-primary)';
@@ -167,16 +164,13 @@ async function openChat(roomId, roomName, roomType, username) {
   document.getElementById('chat-header-sub').textContent =
     roomType === 'project' ? 'Project Team Chat' : 'Direct Message';
 
-  // Load messages
-  await loadAndRenderMessages(roomId, username);
+  await loadAndRenderMessages(roomId, myProfileId, myIds);
 
-  // Poll every 5s
   if (pollInterval) clearInterval(pollInterval);
   pollInterval = setInterval(() => {
-    if (currentRoomId === roomId) loadAndRenderMessages(roomId, username);
-  }, 5000);
+    if (currentRoomId === roomId) loadAndRenderMessages(roomId, myProfileId, myIds);
+  }, 4000);
 
-  // Wire send — clone to remove old listeners
   const oldInput = document.getElementById('chat-input');
   const oldBtn   = document.getElementById('chat-send-btn');
   const newInput = oldInput.cloneNode(true);
@@ -189,8 +183,8 @@ async function openChat(roomId, roomName, roomType, username) {
     if (!text) return;
     newBtn.disabled = true;
     newInput.value = '';
-    await portfolioStore.sendMessage(roomId, username, text);
-    await loadAndRenderMessages(roomId, username);
+    await portfolioStore.sendMessage(roomId, myProfileId, text);
+    await loadAndRenderMessages(roomId, myProfileId, myIds);
     newBtn.disabled = false;
     newInput.focus();
   };
@@ -200,15 +194,13 @@ async function openChat(roomId, roomName, roomType, username) {
   newInput.focus();
 }
 
-async function loadAndRenderMessages(roomId, username) {
+async function loadAndRenderMessages(roomId, myProfileId, myIds) {
   const msgs = await portfolioStore.loadMessages(roomId);
   const container = document.getElementById('chat-messages');
   if (!container || currentRoomId !== roomId) return;
 
-  // Register room so background poll can track it
   registerRoom(roomId);
 
-  // Mark as seen — user is actively viewing this room
   const prevSeen = getSeenCount(roomId);
   if (msgs.length > prevSeen) {
     const newMsgs = msgs.length - prevSeen;
@@ -223,13 +215,17 @@ async function loadAndRenderMessages(roomId, username) {
     return;
   }
 
-  container.innerHTML = msgs.map(m => `
-    <div class="message-bubble ${m.sender === username ? 'message-mine' : 'message-theirs'}">
-      ${m.sender !== username ? `<div class="message-sender">${escapeHtml(m.sender)}</div>` : ''}
-      <div class="message-text">${escapeHtml(m.text)}</div>
-      <div class="message-time">${formatTime(m.timestamp)}</div>
-    </div>
-  `).join('');
+  container.innerHTML = msgs.map(m => {
+    // "Mine" if sender matches any of my known identities (case-insensitive)
+    const isMine = myIds.has(m.sender) || myIds.has(m.sender.toLowerCase());
+    return `
+      <div class="message-bubble ${isMine ? 'message-mine' : 'message-theirs'}">
+        ${!isMine ? `<div class="message-sender">${escapeHtml(m.sender)}</div>` : ''}
+        <div class="message-text">${escapeHtml(m.text)}</div>
+        <div class="message-time">${formatTime(m.timestamp)}</div>
+      </div>
+    `;
+  }).join('');
 
   container.scrollTop = container.scrollHeight;
 }
