@@ -1,5 +1,6 @@
 /* NAVBAR */
-.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 3rem;display:flex;align-items:center;justify-content:space-between;background:rgba(13,17,23,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle);}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 3rem;display:flex;align-items:center;justify-content:space-between;background:rgba(240,244,242,0.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border-subtle);transition:background 0.4s ease;}
+[data-theme="dark"] .navbar{background:rgba(13,17,23,0.88);}
 .navbar-logo{font-family:var(--font-heading);font-size:1.5rem;font-weight:700;background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer;transition:transform var(--transition-fast);}
 .navbar-logo:hover{transform:scale(1.05);}
 .navbar-actions{display:flex;align-items:center;gap:1rem;}

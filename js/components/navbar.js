@@ -69,8 +69,8 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
   // Render Pending Connections
   if (pendingRequests.length > 0) {
     notifsHTML += pendingRequests.map(r => `
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 5px;">
-         <span style="font-size: 0.85rem; color: #eee; margin-right: 10px;"><strong>${r.from}</strong> sent a request.</span>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: var(--border-subtle); border-radius: 8px; margin-bottom: 5px;">
+         <span style="font-size: 0.85rem; color: var(--text-primary); margin-right: 10px;"><strong>${r.from}</strong> sent a request.</span>
          <button class="btn-primary" style="padding: 4px 10px; font-size: 0.75rem; width: auto; border-radius: 4px;" onclick="window.acceptConnection('${r.from}', '${r.to}')">Accept</button>
       </div>
     `).join('');
@@ -79,8 +79,8 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
   // Render Project Join Requests
   if (projectJoinRequests.length > 0) {
     notifsHTML += projectJoinRequests.map(r => `
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(81, 207, 102, 0.1); border-left: 3px solid #51cf66; border-radius: 8px; margin-bottom: 5px;">
-         <span style="font-size: 0.85rem; color: #eee; margin-right: 10px;"><strong>${r.from}</strong> wants to join <em>${r.projectTitle}</em>.</span>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: rgba(16,185,129,0.1); border-left: 3px solid #10b981; border-radius: 8px; margin-bottom: 5px;">
+         <span style="font-size: 0.85rem; color: var(--text-primary); margin-right: 10px;"><strong>${r.from}</strong> wants to join <em>${r.projectTitle}</em>.</span>
          <button class="btn-primary" style="padding: 4px 10px; font-size: 0.75rem; width: auto; border-radius: 4px;" onclick="window.acceptProjectJoin('${r.projectId}', '${r.from}')">Accept</button>
       </div>
     `).join('');
@@ -89,15 +89,15 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
   // Render Friend Projects
   if (friendProjects.length > 0) {
     notifsHTML += friendProjects.map(p => `
-      <div style="display: flex; flex-direction: column; padding: 10px; background: rgba(255, 255, 255, 0.03); border-left: 3px solid var(--accent-purple); border-radius: 8px; margin-bottom: 5px; cursor: pointer;" onclick="window.location.hash='#/collaborate'">
-         <span style="font-size: 0.8rem; color: #aaa; margin-bottom: 3px;">Project Alert</span>
-         <span style="font-size: 0.85rem; color: #eee;"><strong>${p.owner}</strong> started a new project: <em>${p.title}</em></span>
+      <div style="display: flex; flex-direction: column; padding: 10px; background: var(--border-subtle); border-left: 3px solid var(--accent-purple); border-radius: 8px; margin-bottom: 5px; cursor: pointer;" onclick="window.location.hash='#/collaborate'">
+         <span style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 3px;">Project Alert</span>
+         <span style="font-size: 0.85rem; color: var(--text-primary);"><strong>${p.owner}</strong> started a new project: <em>${p.title}</em></span>
       </div>
     `).join('');
   }
 
   if (totalNotifs === 0) {
-    notifsHTML = '<div style="padding: 10px; font-size: 0.85rem; color: #888; text-align: center;">No new notifications</div>';
+    notifsHTML = `<div style="padding: 10px; font-size: 0.85rem; color: var(--text-muted); text-align: center;">No new notifications</div>`;
   }
 
   return `
@@ -118,8 +118,8 @@ window.acceptProjectJoin = async (projectId, reqUsername) => {
             ${bellBadge}
           </button>
           
-          <div id="notif-dropdown" class="hidden" style="position: absolute; top: 120%; right: 0; width: 280px; background: var(--bg-secondary); backdrop-filter: blur(10px); border: 1px solid var(--border-glass); border-radius: 12px; padding: 12px; box-shadow: var(--shadow-lg); z-index: 1000; display: flex; flex-direction: column; gap: 5px;">
-             <div style="font-size: 0.9rem; font-weight: 600; color: white; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1);">Notifications</div>
+          <div id="notif-dropdown" class="hidden" style="position: absolute; top: 120%; right: 0; width: 300px; background: var(--bg-secondary); backdrop-filter: blur(16px); border: 1px solid var(--border-glass); border-radius: 12px; padding: 12px; box-shadow: var(--shadow-lg); z-index: 1000; display: flex; flex-direction: column; gap: 5px;">
+             <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle);">Notifications</div>
              ${notifsHTML}
           </div>
         </div>
