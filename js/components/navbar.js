@@ -10,6 +10,7 @@ export function renderNavbar(username, activePage) {
     { hash: '#/home', label: '🏠 Home', id: 'home' },
     { hash: '#/find-teammates', label: '🤝 Find Teammates', id: 'find-teammates' },
     { hash: '#/collaborate', label: '⚡ Collaborate', id: 'collaborate' },
+    { hash: '#/messages', label: '💬 Messages', id: 'messages' },
     { hash: '#/builder', label: '🚀 Build Portfolio', id: 'builder' },
   ];
 

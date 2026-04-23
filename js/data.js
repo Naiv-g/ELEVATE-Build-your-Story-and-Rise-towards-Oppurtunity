@@ -257,7 +257,32 @@ class PortfolioStore {
       } catch (e) { console.error('Error accepting join request:', e); }
     }
   }
+
+  // ============ MESSAGING ============
+  getDMRoomId(u1, u2) {
+    return 'dm_' + [u1, u2].sort().join('_');
+  }
+
+  async loadMessages(roomId) {
+    try {
+      const { data } = await supabase.from('messages').select('data').eq('id', roomId).single();
+      return (data && data.data) ? data.data : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  async sendMessage(roomId, sender, text) {
+    const existing = await this.loadMessages(roomId);
+    const msg = { sender, text, timestamp: new Date().toISOString() };
+    const updated = [...existing, msg];
+    try {
+      await supabase.from('messages').upsert({ id: roomId, data: updated });
+    } catch (e) { console.error('Error sending message:', e); }
+    return msg;
+  }
 }
+
 
 const portfolioStore = new PortfolioStore();
 

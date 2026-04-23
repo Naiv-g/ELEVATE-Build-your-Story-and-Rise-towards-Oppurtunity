@@ -4,6 +4,7 @@ import { renderProfile } from './pages/profile.js';
 import { renderBuilder } from './pages/builder.js';
 import { renderFindTeammates } from './pages/find-teammates.js';
 import { renderCollaborate } from './pages/collaborate.js';
+import { renderMessages } from './pages/messages.js';
 import { portfolioStore, supabase } from './data.js';
 
 class ElevateApp {
@@ -86,6 +87,8 @@ class ElevateApp {
       this.renderPage(renderFindTeammates(this.username));
     } else if (hash === '#/collaborate') {
       this.renderPage(renderCollaborate(this.username));
+    } else if (hash === '#/messages') {
+      this.renderPage(renderMessages(this.username));
     } else {
       window.location.hash = '#/home';
     }
