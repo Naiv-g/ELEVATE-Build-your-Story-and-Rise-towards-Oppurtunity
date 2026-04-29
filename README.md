@@ -22,7 +22,7 @@ We're four B.Tech students at Graphic Era University, and we kept running into t
 
 So we built ELEVATE. It's a platform where students can put up a proper portfolio (not just a list of courses), connect with peers, post collaboration projects, and now — message each other directly.
 
-We deliberately chose to write the whole thing in Vanilla JavaScript with no framework. Not because we don't know React, but because we wanted to actually understand what's happening under the hood — how the DOM works, how async requests flow, how a router works without a library doing it for you. It was harder, but worth it.
+We deliberately chose to write the whole thing in Vanilla JavaScript with no framework. Not because we don't know React, but because we wanted to actually understand what's happening under the hood — how the DOM works, how async requests flow, how a router works without a library doing it for you.
 
 ---
 
