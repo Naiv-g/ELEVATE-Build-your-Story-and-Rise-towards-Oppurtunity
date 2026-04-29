@@ -1,6 +1,6 @@
 import { portfolioStore } from '../data.js';
 import { renderNavbar } from '../components/navbar.js';
-
+/* This is to send the collaboration request */
 export function renderCollaborate(username) {
   const html = `
     ${renderNavbar(username, 'collaborate')}
