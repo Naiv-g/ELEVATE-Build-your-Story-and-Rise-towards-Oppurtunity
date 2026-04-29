@@ -18,7 +18,7 @@
 
 ## Why We Built This
 
-We're four B.Tech students at Graphic Era University, and we kept running into the same problem — when we wanted to form a team for a hackathon or a course project, there was no good place to find people with the right skills. LinkedIn felt too formal. GitHub had no discovery. Spreadsheets and WhatsApp groups were messy.
+We are four B.Tech students at Graphic Era University, and we kept running into the same problem — when we wanted to form a team for a hackathon or a course project, there was no good place to find people with the right skills. LinkedIn felt too formal. GitHub had no discovery. Spreadsheets and WhatsApp groups were messy.
 
 So we built ELEVATE. It's a platform where students can put up a proper portfolio (not just a list of courses), connect with peers, post collaboration projects, and now — message each other directly.
 
@@ -107,7 +107,7 @@ ELEVATE/
 
 ## How the SPA Routing Works
 
-The whole app lives in one HTML file. Navigation happens through URL hashes — clicking "Messages" changes the URL to `#/messages` without a page reload. A `hashchange` event listener in `app.js` catches this and calls the right render function. The function returns an HTML string and an `init()` callback. The HTML gets injected into `<div id="app">`, and then `init()` runs to attach event listeners.
+The whole app converges in one HTML file. Navigation happens through URL hashes — clicking "Messages" changes the URL to `#/messages` without a page reload. A `hashchange` event listener in `app.js` catches this and calls the right render function. The function returns an HTML string and an `init()` callback. The HTML gets injected into `<div id="app">`, and then `init()` runs to attach event listeners.
 
 One thing that tripped us up early: ES6 modules don't work over the `file://` protocol. You need to run a local server (`npx serve` or VS Code Live Server) otherwise the imports just fail silently.
 
@@ -158,7 +158,7 @@ A few things that weren't obvious going in:
 |---|---|
 | **Naivaidhya Garg** | SPA router, auth, messaging system, canonical ID fix, deployment |
 | **Aarjav Jain** | Portfolio builder, profile view, theme system |
-| **Devank Joshi** | Collaborate page, database setup, XSS prevention |
+| **Devank Joshi** | Collaborator page, database setup, XSS prevention |
 | **Aditya Rawat** | Find Teammates page, display name normalization, UI polish |
 
 ---
@@ -263,5 +263,5 @@ Navigate to `http://localhost:3000` in your browser!
 
 <div align="center">
   <br>
-  <strong>© 2026 Team Elevate</strong> 
+  <strong>© 2026 Elevate</strong> 
 </div>
